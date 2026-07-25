@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+	<meta charset="utf-8">
+	<title>BMI és napi energiaszükséglet kalkulátor</title>
+	<meta name="author" content="Kuti Anett">
+	<meta name="description" content="Számold ki a BMI értékedet és a napi energiaszükségleted a fogyi program indulásához.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" type="image/x-icon" href="" />
+	<style>
+		*,
+		*:before,
+		*:after {
+			box-sizing: border-box;
+		}
+
+		body {
+			background: url(bmi.jpg);
+			background-size: cover;
+			background-attachment: fixed;
+			padding: 4rem 8rem;
+			font-family: sans-serif;
+		}
+
+		h1 {
+			width: 50%;
+			float: right;
+			clear: both;
+			margin: 0 0 1rem;
+		}
+
+		p.intro {
+			width: 50%;
+			float: right;
+			clear: both;
+			margin: 0 0 2rem;
+		}
+
+		#get-bmi {
+			width: 50%;
+			float: right;
+			background: rgba(255, 255, 255, 0.9);
+			padding: 1.5rem;
+			border-radius: 0.5rem;
+		}
+
+		#get-bmi label {
+			display: block;
+			margin-top: 0.75rem;
+			font-weight: bold;
+		}
+
+		#get-bmi input,
+		#get-bmi select {
+			width: 100%;
+			padding: 0.4rem;
+			margin-top: 0.25rem;
+		}
+
+		#get-bmi button {
+			margin-top: 1.5rem;
+			padding: 0.6rem 1.5rem;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		#results {
+			width: 50%;
+			float: right;
+			clear: both;
+			font-weight: bold;
+			margin-top: 2rem;
+			background: rgba(255, 255, 255, 0.9);
+			padding: 1.5rem;
+			border-radius: 0.5rem;
+		}
+
+		#results p {
+			margin: 0.3rem 0;
+		}
+
+		#results .warning {
+			color: #b00020;
+		}
+
+		#results .ok {
+			color: #1b7a1b;
+		}
+
+	</style>
+</head>
+
+<body>
+	<h1>BMI és napi energiaszükséglet kalkulátor</h1>
+	<p class="intro">Add meg az adataidat, és megtudod a BMI értékedet, valamint azt, hogy naponta mennyi energiára van szükséged. Ez az első lépés a személyre szabott fogyi programod elindításához!</p>
+
+	<div id="get-bmi">
+		<label for="gender">Nem</label>
+		<select id="gender">
+			<option value="ferfi">Férfi</option>
+			<option value="no">Nő</option>
+		</select>
+
+		<label for="age">Életkor (év)</label>
+		<input type="number" id="age" min="10" step="1" placeholder="pl. 28">
+
+		<label for="weight">Testsúly (kg)</label>
+		<input type="number" id="weight" min="1" step="0.1" placeholder="pl. 65">
+
+		<label for="height">Magasság (cm)</label>
+		<input type="number" id="height" min="1" step="0.1" placeholder="pl. 170">
+
+		<label for="work">Munka jellege</label>
+		<select id="work">
+			<option value="konnyu">Könnyű munka</option>
+			<option value="mersekelt">Mérsékelt munka</option>
+			<option value="nehez">Nehéz munka</option>
+		</select>
+
+		<label for="activity">Sport aktivitás</label>
+		<select id="activity">
+			<option value="nemaktiv">Nem aktív</option>
+			<option value="mersekeltenaktiv">Mérsékelten aktív</option>
+			<option value="aktiv">Aktív</option>
+		</select>
+
+		<button id="calculate" type="button">Kiszámolom</button>
+	</div>
+
+	<div id="results"></div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function($) {
+
+			// Napi alapanyagcsere (BMR) együtthatók életkor és nem szerint: [szorzó, konstans]
+			var bmrTable = {
+				ferfi: [
+					{ min: 10, max: 18, factor: 17.5, constant: 651 },
+					{ min: 18, max: 30, factor: 15.3, constant: 679 },
+					{ min: 30, max: 60, factor: 11.6, constant: 879 },
+					{ min: 60, max: Infinity, factor: 13.5, constant: 487 }
+				],
+				no: [
+					{ min: 10, max: 18, factor: 12.2, constant: 746 },
+					{ min: 18, max: 30, factor: 17.5, constant: 496 },
+					{ min: 30, max: 60, factor: 8.7, constant: 829 },
+					{ min: 60, max: Infinity, factor: 10.5, constant: 596 }
+				]
+			};
+
+			// Aktivitási szorzók: [sport aktivitás][munka jellege]
+			var activityTable = {
+				ferfi: {
+					nemaktiv: { konnyu: 1.4, mersekelt: 1.6, nehez: 1.7 },
+					mersekeltenaktiv: { konnyu: 1.5, mersekelt: 1.7, nehez: 1.8 },
+					aktiv: { konnyu: 1.6, mersekelt: 1.8, nehez: 1.9 }
+				},
+				no: {
+					nemaktiv: { konnyu: 1.4, mersekelt: 1.5, nehez: 1.5 },
+					mersekeltenaktiv: { konnyu: 1.5, mersekelt: 1.6, nehez: 1.6 },
+					aktiv: { konnyu: 1.6, mersekelt: 1.7, nehez: 1.7 }
+				}
+			};
+
+			function findBmrRow(gender, age) {
+				var rows = bmrTable[gender];
+				for (var i = 0; i < rows.length; i++) {
+					if (age >= rows[i].min && age < rows[i].max) {
+						return rows[i];
+					}
+				}
+				return null;
+			}
+
+			$('#calculate').on('click', function() {
+				var gender = $('#gender').val();
+				var age = parseFloat($('#age').val());
+				var weight = parseFloat($('#weight').val());
+				var heightCm = parseFloat($('#height').val());
+				var work = $('#work').val();
+				var activity = $('#activity').val();
+
+				if (!age || age < 10 || !weight || weight <= 0 || !heightCm || heightCm <= 0) {
+					$('#results').html('<p class="warning">Kérlek, tölts ki minden mezőt érvényes értékkel (az életkor legalább 10 év legyen).</p>');
+					return;
+				}
+
+				var heightM = heightCm / 100;
+				var bmi = weight / (heightM * heightM);
+
+				var bmrRow = findBmrRow(gender, age);
+				var bmr = bmrRow.factor * bmi + bmrRow.constant;
+
+				var activityFactor = activityTable[gender][activity][work];
+				var dailyEnergy = bmr * activityFactor;
+
+				var bmiClass = 'ok';
+				var bmiMessage = 'Ez az ideális testsúly tartomány.';
+				if (bmi < 18.5) {
+					bmiClass = 'warning';
+					bmiMessage = 'Ez a normálisnál alacsonyabb testsúlyt jelez.';
+				} else if (bmi > 24.9) {
+					bmiClass = 'warning';
+					bmiMessage = 'Ez a normálisnál magasabb testsúlyt jelez - épp neked való a fogyi programunk!';
+				}
+
+				var html = '';
+				html += '<p>BMI érték: ' + bmi.toFixed(1) + '</p>';
+				html += '<p class="' + bmiClass + '">' + bmiMessage + ' (ideális tartomány: 18.5 - 24.9)</p>';
+				html += '<p>Napi alapanyagcsere szükséglet: ' + Math.round(bmr) + ' kcal/nap</p>';
+				html += '<p>Napi energiaszükséglet: ' + Math.round(dailyEnergy) + ' kcal/nap</p>';
+
+				$('#results').html(html);
+			});
+
+		});
+	</script>
+</body>
+
+</html>
