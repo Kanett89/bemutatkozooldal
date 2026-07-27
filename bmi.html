@@ -3,12 +3,19 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>BMI és napi energiaszükséglet kalkulátor</title>
+	<title>Projekt feladat - BMI kalkulátor</title>
 	<meta name="author" content="Kuti Anett">
 	<meta name="description" content="Számold ki a BMI értékedet és a napi energiaszükségleted a fogyi program indulásához.">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" type="image/x-icon" href="" />
 	<style>
+		:root {
+			--form-ui-color: #ff7b5b;
+			--form-ui-bg: #ffffff;
+			--form-size: 2rem;
+			--form-border-radius: 0.25rem;
+		}
+
 		*,
 		*:before,
 		*:after {
@@ -21,48 +28,96 @@
 			background-attachment: fixed;
 			padding: 4rem 8rem;
 			font-family: sans-serif;
-		}
-
-		h1 {
-			width: 50%;
-			float: right;
-			clear: both;
-			margin: 0 0 1rem;
-		}
-
-		p.intro {
-			width: 50%;
-			float: right;
-			clear: both;
-			margin: 0 0 2rem;
+			margin: 0;
 		}
 
 		#get-bmi {
 			width: 50%;
 			float: right;
-			background: rgba(255, 255, 255, 0.9);
-			padding: 1.5rem;
-			border-radius: 0.5rem;
 		}
 
-		#get-bmi label {
+		.field {
+			margin-bottom: 1.75rem;
+		}
+
+		.field label.field-label {
 			display: block;
-			margin-top: 0.75rem;
 			font-weight: bold;
+			font-size: 1.1rem;
+			margin-bottom: 0.6rem;
 		}
 
-		#get-bmi input,
-		#get-bmi select {
-			width: 100%;
-			padding: 0.4rem;
-			margin-top: 0.25rem;
+		.stepper {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.75rem;
 		}
 
-		#get-bmi button {
-			margin-top: 1.5rem;
-			padding: 0.6rem 1.5rem;
-			font-weight: bold;
+		.stepper button {
+			width: var(--form-size);
+			height: var(--form-size);
+			border-radius: 50%;
+			border: 1px solid #333;
+			background: var(--form-ui-bg);
+			font-size: 1.2rem;
+			line-height: 1;
 			cursor: pointer;
+		}
+
+		.stepper input {
+			width: 4rem;
+			height: var(--form-size);
+			text-align: center;
+			font-size: 1.1rem;
+			border: 1px solid #333;
+			border-radius: var(--form-border-radius);
+			background: var(--form-ui-bg);
+			-moz-appearance: textfield;
+		}
+
+		.stepper input::-webkit-outer-spin-button,
+		.stepper input::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		.radio-group {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1.5rem;
+		}
+
+		.radio-group label {
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+			font-size: 1.05rem;
+			cursor: pointer;
+		}
+
+		.radio-group input[type="radio"] {
+			width: 1.1rem;
+			height: 1.1rem;
+			accent-color: var(--form-ui-color);
+			cursor: pointer;
+		}
+
+		#calculate {
+			background: var(--form-ui-color);
+			color: #fff;
+			border: none;
+			padding: 1rem 2.5rem;
+			font-size: 1rem;
+			font-weight: bold;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			border-radius: 2rem;
+			cursor: pointer;
+			margin-top: 0.5rem;
+		}
+
+		#calculate:hover {
+			opacity: 0.9;
 		}
 
 		#results {
@@ -71,9 +126,6 @@
 			clear: both;
 			font-weight: bold;
 			margin-top: 2rem;
-			background: rgba(255, 255, 255, 0.9);
-			padding: 1.5rem;
-			border-radius: 0.5rem;
 		}
 
 		#results p {
@@ -92,40 +144,63 @@
 </head>
 
 <body>
-	<h1>BMI és napi energiaszükséglet kalkulátor</h1>
-	<p class="intro">Add meg az adataidat, és megtudod a BMI értékedet, valamint azt, hogy naponta mennyi energiára van szükséged. Ez az első lépés a személyre szabott fogyi programod elindításához!</p>
-
 	<div id="get-bmi">
-		<label for="gender">Nem</label>
-		<select id="gender">
-			<option value="ferfi">Férfi</option>
-			<option value="no">Nő</option>
-		</select>
 
-		<label for="age">Életkor (év)</label>
-		<input type="number" id="age" min="10" step="1" placeholder="pl. 28">
+		<div class="field">
+			<label class="field-label">Életkora</label>
+			<div class="stepper">
+				<button type="button" class="dec" data-target="age">-</button>
+				<input type="number" id="age" value="30" min="10">
+				<button type="button" class="inc" data-target="age">+</button>
+			</div>
+		</div>
 
-		<label for="weight">Testsúly (kg)</label>
-		<input type="number" id="weight" min="1" step="0.1" placeholder="pl. 65">
+		<div class="field">
+			<label class="field-label">Testsúlya</label>
+			<div class="stepper">
+				<button type="button" class="dec" data-target="weight">-</button>
+				<input type="number" id="weight" value="70" min="1">
+				<button type="button" class="inc" data-target="weight">+</button>
+			</div>
+		</div>
 
-		<label for="height">Magasság (cm)</label>
-		<input type="number" id="height" min="1" step="0.1" placeholder="pl. 170">
+		<div class="field">
+			<label class="field-label">Testmagassága</label>
+			<div class="stepper">
+				<button type="button" class="dec" data-target="height">-</button>
+				<input type="number" id="height" value="170" min="1">
+				<button type="button" class="inc" data-target="height">+</button>
+			</div>
+		</div>
 
-		<label for="work">Munka jellege</label>
-		<select id="work">
-			<option value="konnyu">Könnyű munka</option>
-			<option value="mersekelt">Mérsékelt munka</option>
-			<option value="nehez">Nehéz munka</option>
-		</select>
+		<div class="field">
+			<label class="field-label">Az Ön neme</label>
+			<div class="radio-group">
+				<label><input type="radio" name="gender" value="no" checked> nő</label>
+				<label><input type="radio" name="gender" value="ferfi"> férfi</label>
+			</div>
+		</div>
 
-		<label for="activity">Sport aktivitás</label>
-		<select id="activity">
-			<option value="nemaktiv">Nem aktív</option>
-			<option value="mersekeltenaktiv">Mérsékelten aktív</option>
-			<option value="aktiv">Aktív</option>
-		</select>
+		<div class="field">
+			<label class="field-label">Sport aktivitás</label>
+			<div class="radio-group">
+				<label><input type="radio" name="activity" value="nemaktiv" checked> nem aktív</label>
+				<label><input type="radio" name="activity" value="mersekeltenaktiv"> mérsékelten aktív</label>
+				<label><input type="radio" name="activity" value="aktiv"> aktív</label>
+			</div>
+		</div>
 
-		<button id="calculate" type="button">Kiszámolom</button>
+		<div class="field">
+			<label class="field-label">Munkavégzés</label>
+			<div class="radio-group">
+				<label><input type="radio" name="work" value="konnyu" checked> könnyű munka</label>
+				<label><input type="radio" name="work" value="mersekelt"> mérsékelt munka</label>
+				<label><input type="radio" name="work" value="nehez"> nehéz munka</label>
+			</div>
+		</div>
+
+		<button id="calculate" type="button">BMI SZÁMÍTÁS</button>
+
 	</div>
 
 	<div id="results"></div>
@@ -175,13 +250,27 @@
 				return null;
 			}
 
+			// +/- léptető gombok
+			$('.stepper button').on('click', function() {
+				var targetId = $(this).data('target');
+				var input = $('#' + targetId);
+				var min = parseFloat(input.attr('min')) || 0;
+				var value = parseFloat(input.val()) || 0;
+				if ($(this).hasClass('inc')) {
+					value += 1;
+				} else {
+					value = Math.max(min, value - 1);
+				}
+				input.val(value);
+			});
+
 			$('#calculate').on('click', function() {
-				var gender = $('#gender').val();
+				var gender = $('input[name="gender"]:checked').val();
 				var age = parseFloat($('#age').val());
 				var weight = parseFloat($('#weight').val());
 				var heightCm = parseFloat($('#height').val());
-				var work = $('#work').val();
-				var activity = $('#activity').val();
+				var work = $('input[name="work"]:checked').val();
+				var activity = $('input[name="activity"]:checked').val();
 
 				if (!age || age < 10 || !weight || weight <= 0 || !heightCm || heightCm <= 0) {
 					$('#results').html('<p class="warning">Kérlek, tölts ki minden mezőt érvényes értékkel (az életkor legalább 10 év legyen).</p>');
