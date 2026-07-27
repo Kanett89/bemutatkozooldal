@@ -96,18 +96,18 @@
 	<script type="text/javascript">
 		// Kínai állatjegyek, 1900-tól (Patkány) kezdődő sorrendben
 		var zodiacAnimals = [
-			{ name: 'Patkány', emoji: '🐀', description: 'Talpraesett, alkalmazkodó és jó megfigyelő.' },
-			{ name: 'Bivaly', emoji: '🐂', description: 'Kitartó, megbízható és szorgalmas.' },
-			{ name: 'Tigris', emoji: '🐅', description: 'Bátor, magabiztos és karizmatikus.' },
-			{ name: 'Nyúl', emoji: '🐇', description: 'Kedves, óvatos és diplomatikus.' },
-			{ name: 'Sárkány', emoji: '🐉', description: 'Energikus, önbizalommal teli és karizmatikus vezető.' },
-			{ name: 'Kígyó', emoji: '🐍', description: 'Bölcs, rejtélyes és intuitív.' },
-			{ name: 'Ló', emoji: '🐎', description: 'Szabadságszerető, energikus és társaságkedvelő.' },
-			{ name: 'Kecske', emoji: '🐐', description: 'Kreatív, gyengéd és együttérző.' },
-			{ name: 'Majom', emoji: '🐒', description: 'Okos, szellemes és leleményes.' },
-			{ name: 'Kakas', emoji: '🐓', description: 'Magabiztos, precíz és szókimondó.' },
-			{ name: 'Kutya', emoji: '🐕', description: 'Hűséges, becsületes és igazságszerető.' },
-			{ name: 'Disznó', emoji: '🐖', description: 'Nagylelkű, őszinte és szorgalmas.' }
+			{ name: 'Patkány', description: 'Talpraesett, alkalmazkodó és jó megfigyelő.' },
+			{ name: 'Bivaly', description: 'Kitartó, megbízható és szorgalmas.' },
+			{ name: 'Tigris', description: 'Bátor, magabiztos és karizmatikus.' },
+			{ name: 'Nyúl', description: 'Kedves, óvatos és diplomatikus.' },
+			{ name: 'Sárkány', description: 'Energikus, önbizalommal teli és karizmatikus vezető.' },
+			{ name: 'Kígyó', description: 'Bölcs, rejtélyes és intuitív.' },
+			{ name: 'Ló', description: 'Szabadságszerető, energikus és társaságkedvelő.' },
+			{ name: 'Kecske', description: 'Kreatív, gyengéd és együttérző.' },
+			{ name: 'Majom', description: 'Okos, szellemes és leleményes.' },
+			{ name: 'Kakas', description: 'Magabiztos, precíz és szókimondó.' },
+			{ name: 'Kutya', description: 'Hűséges, becsületes és igazságszerető.' },
+			{ name: 'Disznó', description: 'Nagylelkű, őszinte és szorgalmas.' }
 		];
 
 		function getZodiacIndex(birthYear) {
@@ -128,7 +128,7 @@
 			var animal = zodiacAnimals[index];
 
 			var html = '';
-			html += '<p class="animal">' + animal.emoji + ' ' + animal.name + '</p>';
+			html += '<p class="animal">' + animal.name + '</p>';
 			html += '<p>' + animal.description + '</p>';
 			results.innerHTML = html;
 		}
