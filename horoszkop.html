@@ -15,31 +15,36 @@
 			box-sizing: border-box;
 		}
 
-		body {
+		html {
 			background: linear-gradient(135deg, #2b0a3d, #6a1b9a 60%, #b71c8c);
+		}
+
+		body {
 			min-height: 100vh;
-			padding: 4rem 8rem;
+			margin: 0;
+			padding: 4rem 1.5rem;
 			font-family: sans-serif;
 			color: #fff;
+			display: flex;
+			justify-content: center;
+		}
+
+		.page {
+			width: 100%;
+			max-width: 32rem;
+			text-align: center;
 		}
 
 		h1 {
-			width: 50%;
-			float: right;
-			clear: both;
 			margin: 0 0 1rem;
 		}
 
 		p.intro {
-			width: 50%;
-			float: right;
-			clear: both;
 			margin: 0 0 2rem;
 		}
 
 		#get-horoszkop {
-			width: 50%;
-			float: right;
+			text-align: left;
 			background: rgba(255, 255, 255, 0.1);
 			padding: 1.5rem;
 			border-radius: 0.5rem;
@@ -59,14 +64,15 @@
 		}
 
 		#results {
-			width: 50%;
-			float: right;
-			clear: both;
-			margin-top: 2rem;
+			margin-top: 1.5rem;
 			background: rgba(255, 255, 255, 0.9);
 			color: #2b0a3d;
 			padding: 1.5rem;
 			border-radius: 0.5rem;
+		}
+
+		#results:empty {
+			display: none;
 		}
 
 		#results .animal {
@@ -83,15 +89,17 @@
 </head>
 
 <body>
-	<h1>Kínai horoszkóp kalkulátor</h1>
-	<p class="intro">Add meg a születési éved, és a rendszer kiszámolja, melyik kínai állatjegy tartozik hozzád - a kínai horoszkóp 12 éves ciklusban ismétlődő 12 szimbólumból áll, 1900-tól kezdve a Patkány jegyével.</p>
+	<div class="page">
+		<h1>Kínai horoszkóp kalkulátor</h1>
+		<p class="intro">Add meg a születési éved, és a rendszer kiszámolja, melyik kínai állatjegy tartozik hozzád - a kínai horoszkóp 12 éves ciklusban ismétlődő 12 szimbólumból áll, 1900-tól kezdve a Patkány jegyével.</p>
 
-	<div id="get-horoszkop">
-		<label for="birthyear">Születési év</label>
-		<input type="number" id="birthyear" min="1900" step="1" placeholder="pl. 1985">
+		<div id="get-horoszkop">
+			<label for="birthyear">Születési év</label>
+			<input type="number" id="birthyear" min="1900" step="1" placeholder="pl. 1985">
+		</div>
+
+		<div id="results"></div>
 	</div>
-
-	<div id="results"></div>
 
 	<script type="text/javascript">
 		// Kínai állatjegyek, 1900-tól (Patkány) kezdődő sorrendben
