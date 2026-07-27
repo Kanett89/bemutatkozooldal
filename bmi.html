@@ -49,15 +49,17 @@
 
 		.stepper {
 			display: inline-flex;
-			align-items: center;
-			gap: 1rem;
+			align-items: stretch;
+			border: 1px solid #222;
+			border-radius: var(--form-border-radius);
+			overflow: hidden;
+			background: var(--form-ui-bg);
 		}
 
 		.stepper button {
 			width: var(--form-size);
 			height: var(--form-size);
-			border-radius: 50%;
-			border: 1px solid #222;
+			border: none;
 			background: var(--form-ui-bg);
 			font-size: 1.3rem;
 			line-height: 1;
@@ -65,13 +67,20 @@
 			flex: none;
 		}
 
+		.stepper button.dec {
+			border-right: 1px solid #222;
+		}
+
+		.stepper button.inc {
+			border-left: 1px solid #222;
+		}
+
 		.stepper input {
 			width: 4.5rem;
 			height: var(--form-size);
 			text-align: center;
 			font-size: 1.3rem;
-			border: 1px solid #222;
-			border-radius: var(--form-border-radius);
+			border: none;
 			background: var(--form-ui-bg);
 			-moz-appearance: textfield;
 		}
