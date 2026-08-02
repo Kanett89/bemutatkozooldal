@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+	<meta charset="utf-8">
+	<title>Programozási feladatok megoldásai</title>
+	<meta name="author" content="Kuti Anett">
+	<meta name="description" content="Hét programozási feladat megoldása JavaScriptben: színek változóként, tömbök, halmazműveletek, lottó szimuláció.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		*,
+		*:before,
+		*:after {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: sans-serif;
+			background: #f4f2ee;
+			margin: 0;
+			padding: 2rem 1rem 4rem;
+			color: #2b2b2b;
+		}
+
+		h1 {
+			text-align: center;
+			margin-bottom: 0.25rem;
+		}
+
+		p.intro {
+			text-align: center;
+			max-width: 40rem;
+			margin: 0 auto 2rem;
+			color: #555;
+		}
+
+		a.back {
+			display: block;
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+
+		.feladat {
+			max-width: 48rem;
+			margin: 0 auto 1.75rem;
+			background: #fff;
+			border-radius: 0.5rem;
+			padding: 1.5rem 1.75rem;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+		}
+
+		.feladat h2 {
+			margin-top: 0;
+			font-size: 1.15rem;
+			border-bottom: 2px solid #e0dcd4;
+			padding-bottom: 0.5rem;
+		}
+
+		.feladat p.leiras {
+			color: #555;
+			font-style: italic;
+			margin-top: 0;
+		}
+
+		.eredmeny {
+			background: #f4f2ee;
+			border-left: 4px solid #6b8f71;
+			padding: 0.75rem 1rem;
+			border-radius: 0.25rem;
+			margin-top: 0.75rem;
+		}
+
+		.eredmeny p {
+			margin: 0.3rem 0;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-top: 0.5rem;
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 0.4rem 0.6rem;
+			text-align: left;
+			font-size: 0.95rem;
+		}
+
+		th {
+			background: #e9e6df;
+		}
+
+		tr.kiemelt {
+			background: #dff0e2;
+			font-weight: bold;
+		}
+
+		button {
+			padding: 0.5rem 1.25rem;
+			font-weight: bold;
+			cursor: pointer;
+			border: none;
+			border-radius: 0.3rem;
+			background: #6b8f71;
+			color: #fff;
+			margin-top: 0.5rem;
+		}
+
+		button:hover {
+			background: #587a5d;
+		}
+
+		.golyok {
+			display: flex;
+			gap: 0.6rem;
+			margin-top: 0.75rem;
+			flex-wrap: wrap;
+		}
+
+		.golyo {
+			width: 2.4rem;
+			height: 2.4rem;
+			border-radius: 50%;
+			background: #6b8f71;
+			color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: bold;
+		}
+
+		code {
+			background: #eee;
+			padding: 0.1rem 0.35rem;
+			border-radius: 0.25rem;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>Programozási feladatok megoldásai</h1>
+	<p class="intro">Hét kis JavaScript feladat és a megoldásuk - minden eredmény a böngészőben, valós időben számolódik ki.</p>
+	<a class="back" href="index.html">&larr; Vissza a főoldalra</a>
+
+	<div class="feladat">
+		<h2>1. Színek változóként</h2>
+		<p class="leiras">"Sárga a márga, fehér a méz, Fekete a felhő, ha messzire mész. Barna a bánat, piros a vágy, Körülvesznek minket színorgiák"</p>
+		<div class="eredmeny" id="f1"></div>
+	</div>
+
+	<div class="feladat">
+		<h2>2. Havi átlagos látogatottság</h2>
+		<p class="leiras">Havi látogatók száma: 1457, 1786, 1030, 1584, 697, 1292, 1061, 1009, 1125, 807, 1527, 1064, 1989</p>
+		<div class="eredmeny" id="f2"></div>
+	</div>
+
+	<div class="feladat">
+		<h2>3. Betű-tömb generálása függvénnyel</h2>
+		<p class="leiras">'a'=&gt;4, 'b'=&gt;3, 'c'=&gt;2, 'd'=&gt;1, 'e'=&gt;0, stb. - a betűk index szerint csökkenő értéket kapnak</p>
+		<div class="eredmeny" id="f3"></div>
+	</div>
+
+	<div class="feladat">
+		<h2>4. Ötöslottó szimuláció</h2>
+		<p class="leiras">90 számból 5 egyedi, véletlenszerű szám kisorsolása, növekvő sorrendben</p>
+		<div class="eredmeny">
+			<div class="golyok" id="f4"></div>
+			<button id="sorsolGomb" type="button">Új sorsolás</button>
+		</div>
+	</div>
+
+	<div class="feladat">
+		<h2>5. Legrövidebb / leghosszabb név</h2>
+		<p class="leiras">"Borbély Vilmos", "Nagy Erik", "Gulyás Attila", "Bálint Zsolt", "Somogyi Kornél Valentin"</p>
+		<div class="eredmeny" id="f5"></div>
+	</div>
+
+	<div class="feladat">
+		<h2>6. Konferencia nyelvek</h2>
+		<p class="leiras">Magyarul, angolul és franciául tartott előadások listája alapján halmazműveletekkel meghatározott válaszok</p>
+		<div class="eredmeny" id="f6"></div>
+	</div>
+
+	<div class="feladat">
+		<h2>7. Gyümölcsök tápértéke</h2>
+		<p class="leiras">Melyik gyümölcsben van a legtöbb rost, és melyik 3 gyümölcs kalóriatartalma a legalacsonyabb?</p>
+		<div class="eredmeny" id="f7"></div>
+	</div>
+
+	<script>
+		// 1. Színek változóként
+		(function () {
+			var szin1 = 'Sárga', szin2 = 'fehér', szin3 = 'Fekete', szin4 = 'Barna', szin5 = 'piros';
+			var mondat = szin1 + ' a márga, ' + szin2 + ' a méz, ' + szin3 + ' a felhő, ha messzire mész. ' +
+				szin4 + ' a bánat, ' + szin5 + ' a vágy, Körülvesznek minket színorgiák.';
+			document.getElementById('f1').innerHTML =
+				'<p><code>szin1 = "Sárga", szin2 = "fehér", szin3 = "Fekete", szin4 = "Barna", szin5 = "piros"</code></p>' +
+				'<p>' + mondat + '</p>';
+		})();
+
+		// 2. Havi átlagos látogatottság
+		(function () {
+			var latogatok = [1457, 1786, 1030, 1584, 697, 1292, 1061, 1009, 1125, 807, 1527, 1064, 1989];
+			var osszeg = latogatok.reduce(function (a, b) { return a + b; }, 0);
+			var atlag = osszeg / latogatok.length;
+			document.getElementById('f2').innerHTML =
+				'<p>Összesen: ' + osszeg + ' látogató, ' + latogatok.length + ' hónap alatt</p>' +
+				'<p>Havi átlag: <strong>' + atlag.toFixed(2) + '</strong> látogató/hónap</p>';
+		})();
+
+		// 3. Betű-tömb generálása
+		(function () {
+			function betuTomb(n) {
+				var eredmeny = {};
+				for (var i = 0; i < n; i++) {
+					var betu = String.fromCharCode(97 + i);
+					eredmeny[betu] = n - 1 - i;
+				}
+				return eredmeny;
+			}
+			var tomb = betuTomb(5);
+			var sorok = Object.keys(tomb).map(function (betu) {
+				return '<tr><td>' + betu + '</td><td>' + tomb[betu] + '</td></tr>';
+			}).join('');
+			document.getElementById('f3').innerHTML =
+				'<table><tr><th>Betű</th><th>Érték</th></tr>' + sorok + '</table>';
+		})();
+
+		// 4. Ötöslottó szimuláció
+		function otoslotto() {
+			var szamok = [];
+			while (szamok.length < 5) {
+				var szam = Math.floor(Math.random() * 90) + 1;
+				if (szamok.indexOf(szam) === -1) {
+					szamok.push(szam);
+				}
+			}
+			return szamok.sort(function (a, b) { return a - b; });
+		}
+		function rajzolLotto() {
+			var huzottSzamok = otoslotto();
+			document.getElementById('f4').innerHTML = huzottSzamok.map(function (szam) {
+				return '<span class="golyo">' + szam + '</span>';
+			}).join('');
+		}
+		document.getElementById('sorsolGomb').addEventListener('click', rajzolLotto);
+		rajzolLotto();
+
+		// 5. Legrövidebb / leghosszabb név
+		(function () {
+			var nevek = ['Borbély Vilmos', 'Nagy Erik', 'Gulyás Attila', 'Bálint Zsolt', 'Somogyi Kornél Valentin'];
+			var leghosszabb = nevek.reduce(function (a, b) { return b.length > a.length ? b : a; });
+			var legrovidebb = nevek.reduce(function (a, b) { return b.length < a.length ? b : a; });
+			document.getElementById('f5').innerHTML =
+				'<p>Leghosszabb név: <strong>' + leghosszabb + '</strong> (' + leghosszabb.length + ' karakter)</p>' +
+				'<p>Legrövidebb név: <strong>' + legrovidebb + '</strong> (' + legrovidebb.length + ' karakter)</p>';
+		})();
+
+		// 6. Konferencia nyelvek
+		(function () {
+			var magyarul = ['László', 'Barna', 'Zoltán', 'Viktor', 'Béla', 'Albert', 'Csongor', 'András', 'Bálint'];
+			var angolul = ['Bálint', 'Zoltán', 'Flórián', 'András', 'Kende', 'László', 'Balázs', 'Patrik'];
+			var franciaul = ['Sándor', 'András', 'Albert', 'Béla', 'Patrik', 'Balázs', 'Barna', 'Zoltán', 'Viktor'];
+
+			var collator = new Intl.Collator('hu');
+			function rendez(tomb) { return tomb.slice().sort(collator.compare); }
+			function benneVan(nev, tomb) { return tomb.indexOf(nev) !== -1; }
+
+			// angolul és franciául is
+			var angolEsFrancia = angolul.filter(function (nev) { return benneVan(nev, franciaul); });
+
+			// csak magyarul
+			var csakMagyarul = magyarul.filter(function (nev) {
+				return !benneVan(nev, angolul) && !benneVan(nev, franciaul);
+			});
+
+			// mind a három nyelven
+			var mindHarom = magyarul.filter(function (nev) {
+				return benneVan(nev, angolul) && benneVan(nev, franciaul);
+			});
+
+			// angolul igen, magyarul nem
+			var angolNemMagyar = angolul.filter(function (nev) { return !benneVan(nev, magyarul); });
+
+			// összes előadó, egyedi nevekkel, ABC sorrendben
+			var osszesEloado = [];
+			[magyarul, angolul, franciaul].forEach(function (tomb) {
+				tomb.forEach(function (nev) {
+					if (osszesEloado.indexOf(nev) === -1) osszesEloado.push(nev);
+				});
+			});
+
+			// csak 1 nyelven
+			var csak1Nyelven = osszesEloado.filter(function (nev) {
+				var db = 0;
+				if (benneVan(nev, magyarul)) db++;
+				if (benneVan(nev, angolul)) db++;
+				if (benneVan(nev, franciaul)) db++;
+				return db === 1;
+			});
+
+			document.getElementById('f6').innerHTML =
+				'<p>Angolul és franciául is előad: <strong>' + angolEsFrancia.length + ' fő</strong> (' + rendez(angolEsFrancia).join(', ') + ')</p>' +
+				'<p>Csak magyarul ad elő: <strong>' + rendez(csakMagyarul).join(', ') + '</strong></p>' +
+				'<p>Mind a 3 nyelven előad: <strong>' + rendez(mindHarom).join(', ') + '</strong></p>' +
+				'<p>Angolul igen, magyarul nem ad elő: <strong>' + rendez(angolNemMagyar).join(', ') + '</strong></p>' +
+				'<p>Összesen <strong>' + osszesEloado.length + ' fő</strong> ad elő: ' + rendez(osszesEloado).join(', ') + '</p>' +
+				'<p>Csak 1 nyelven adnak elő: <strong>' + rendez(csak1Nyelven).join(', ') + '</strong></p>';
+		})();
+
+		// 7. Gyümölcsök tápértéke
+		(function () {
+			var gyumolcsok = [
+				{ nev: 'ananász', kcal: 31, rost: 4.0 },
+				{ nev: 'avokadó', kcal: 52, rost: 1.3 },
+				{ nev: 'banán', kcal: 42, rost: 2.6 },
+				{ nev: 'citrom', kcal: 55, rost: 1.9 },
+				{ nev: 'szőlő', kcal: 58, rost: 2.8 },
+				{ nev: 'golden alma', kcal: 52, rost: 0.4 },
+				{ nev: 'görög dinnye', kcal: 41, rost: 0.3 },
+				{ nev: 'gránátalma', kcal: 48, rost: 1.0 },
+				{ nev: 'kajszibarack', kcal: 35, rost: 0.8 },
+				{ nev: 'kiwi', kcal: 29, rost: 0.8 },
+				{ nev: 'körte', kcal: 33, rost: 5.6 },
+				{ nev: 'narancs', kcal: 34, rost: 4.0 },
+				{ nev: 'nektarin', kcal: 48, rost: 4.3 },
+				{ nev: 'oszibarack', kcal: 39, rost: 3.8 },
+				{ nev: 'grapefruit', kcal: 65, rost: 3.8 },
+				{ nev: 'szárított szilva', kcal: 62, rost: 2.8 },
+				{ nev: 'zöld citrom', kcal: 16, rost: 3.2 }
+			];
+
+			var legtobbRost = gyumolcsok.reduce(function (a, b) { return b.rost > a.rost ? b : a; });
+			var legalacsonyabbKcal = gyumolcsok.slice().sort(function (a, b) { return a.kcal - b.kcal; }).slice(0, 3);
+
+			var sorok = legalacsonyabbKcal.map(function (gy) {
+				return '<tr><td>' + gy.nev + '</td><td>' + gy.kcal + '</td><td>' + gy.rost.toFixed(1) + '</td></tr>';
+			}).join('');
+
+			document.getElementById('f7').innerHTML =
+				'<p>Legtöbb rostot tartalmazó gyümölcs: <strong>' + legtobbRost.nev + '</strong> (' + legtobbRost.rost.toFixed(1) + ' g rost)</p>' +
+				'<p>A 3 legalacsonyabb kalóriatartalmú gyümölcs:</p>' +
+				'<table><tr><th>Név</th><th>kcal</th><th>rost</th></tr>' + sorok + '</table>';
+		})();
+	</script>
+</body>
+
+</html>
