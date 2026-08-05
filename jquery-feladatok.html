@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+	<meta charset="utf-8">
+	<title>Önálló jQuery feladatok</title>
+	<meta name="author" content="Kuti Anett">
+	<meta name="description" content="Kínai horoszkóp, fűrészáru kalkulátor és futóverseny eredménylista - önálló jQuery gyakorló feladatok.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		*,
+		*:before,
+		*:after {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: sans-serif;
+			background: #f4f2ee;
+			margin: 0;
+			padding: 2rem 1rem 4rem;
+			color: #2b2b2b;
+		}
+
+		h1 {
+			text-align: center;
+			margin-bottom: 0.25rem;
+		}
+
+		p.intro {
+			text-align: center;
+			max-width: 42rem;
+			margin: 0 auto 2rem;
+			color: #555;
+		}
+
+		a.back {
+			display: block;
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+
+		.feladat {
+			max-width: 50rem;
+			margin: 0 auto 1.75rem;
+			background: #fff;
+			border-radius: 0.5rem;
+			padding: 1.5rem 1.75rem;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+		}
+
+		.feladat h2 {
+			margin-top: 0;
+			font-size: 1.15rem;
+			border-bottom: 2px solid #e0dcd4;
+			padding-bottom: 0.5rem;
+		}
+
+		.feladat p.leiras {
+			color: #555;
+			font-style: italic;
+			margin-top: 0;
+		}
+
+		.feladat p.algoritmus {
+			background: #fbf7ec;
+			border-left: 4px solid #c9a54c;
+			padding: 0.6rem 0.9rem;
+			border-radius: 0.25rem;
+			font-size: 0.9rem;
+			color: #6b5a25;
+			white-space: pre-line;
+		}
+
+		.eredmeny {
+			background: #f4f2ee;
+			border-left: 4px solid #6b8f71;
+			padding: 0.75rem 1rem;
+			border-radius: 0.25rem;
+			margin-top: 0.75rem;
+		}
+
+		.eredmeny p {
+			margin: 0.3rem 0;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-top: 0.5rem;
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 0.4rem 0.6rem;
+			text-align: left;
+			font-size: 0.92rem;
+		}
+
+		th {
+			background: #e9e6df;
+		}
+
+		tr.arany {
+			background: #fff4d6;
+		}
+
+		tr.nem-jott {
+			color: #999;
+			font-style: italic;
+		}
+
+		label {
+			display: block;
+			margin-top: 0.75rem;
+			font-weight: bold;
+			font-size: 0.92rem;
+		}
+
+		input,
+		select {
+			width: 100%;
+			padding: 0.4rem;
+			margin-top: 0.25rem;
+		}
+
+		fieldset {
+			margin-top: 0.75rem;
+			border: 1px solid #ddd;
+			border-radius: 0.3rem;
+		}
+
+		.radio-sor label {
+			display: inline-block;
+			font-weight: normal;
+			margin: 0 1rem 0 0.25rem;
+		}
+
+		.radio-sor input {
+			width: auto;
+			display: inline-block;
+		}
+
+		button {
+			padding: 0.5rem 1.25rem;
+			font-weight: bold;
+			cursor: pointer;
+			border: none;
+			border-radius: 0.3rem;
+			background: #6b8f71;
+			color: #fff;
+			margin-top: 1rem;
+			margin-right: 0.5rem;
+		}
+
+		button.masodlagos {
+			background: #a89968;
+		}
+
+		button:hover {
+			opacity: 0.9;
+		}
+
+		#kosar-osszesen {
+			font-size: 1.1rem;
+			margin-top: 0.75rem;
+		}
+
+		.dobogo {
+			display: flex;
+			align-items: flex-end;
+			gap: 0.75rem;
+			margin-top: 1.25rem;
+			justify-content: center;
+		}
+
+		.dobogo .hely {
+			text-align: center;
+			width: 8rem;
+		}
+
+		.dobogo .hely .nev {
+			font-weight: bold;
+			font-size: 0.85rem;
+			margin-bottom: 0.4rem;
+			word-wrap: break-word;
+		}
+
+		.dobogo .oszlop {
+			border-radius: 0.4rem 0.4rem 0 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			color: #fff;
+			font-weight: bold;
+		}
+
+		.dobogo .helyezes-1 .oszlop {
+			height: 8rem;
+			background: linear-gradient(180deg, #ffd75e, #e0ab1c);
+		}
+
+		.dobogo .helyezes-2 .oszlop {
+			height: 6rem;
+			background: linear-gradient(180deg, #d9d9d9, #a8a8a8);
+		}
+
+		.dobogo .helyezes-3 .oszlop {
+			height: 4.5rem;
+			background: linear-gradient(180deg, #d9975a, #a9662c);
+		}
+
+		.dobogo .erem {
+			font-size: 1.6rem;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>Önálló jQuery feladatok</h1>
+	<p class="intro">Az utolsó lecke három feladata: kínai horoszkóp számítás, fűrészáru kalkulátor és egy futóverseny eredménylistája - önállóan megoldva jQuery segítségével.</p>
+	<a class="back" href="index.html">&larr; Vissza a főoldalra</a>
+
+	<!-- 1. FELADAT: KÍNAI HOROSZKÓP -->
+	<div class="feladat">
+		<h2>1. Kínai horoszkóp és csillagjegy</h2>
+		<p class="leiras">Add meg a születési dátumod, és megkapod a nyugati csillagjegyed, valamint a kínai állatjegyed!</p>
+		<p class="algoritmus">Algoritmus:
+1. A felhasználó megadja a teljes születési dátumot (év, hónap, nap) egy date inputban.
+2. A mező change eseményén lefut egy függvény.
+3. A hónap+nap alapján egy elágazás-sorozat megkeresi, mely csillagjegy intervallumába esik a dátum.
+4. Az évszámból kivonjuk 1900-at, majd a képlettel meghatározzuk, hogy a 12 elemű állatjegy-tömb hányadik indexét kell kiírni:
+   (év - 1900) - egészrész((év - 1900) / 12) * 12
+5. Mindkét eredményt beírjuk az oldalra jQuery-vel (.text() / .html()).</p>
+
+		<label for="szuldatum">Születési dátum</label>
+		<input type="date" id="szuldatum" min="1900-01-01">
+
+		<div class="eredmeny" id="horoszkop-eredmeny">
+			<p>Add meg a születési dátumod a fenti mezőben.</p>
+		</div>
+	</div>
+
+	<!-- 2. FELADAT: FŰRÉSZÁRUK -->
+	<div class="feladat">
+		<h2>2. Fűrészáru kalkulátor</h2>
+		<p class="leiras">Válaszd ki a terméket, a méreteket, a darabszámot és az előkészítés módját, majd nézd meg az árat! Több tételt is a kosárba tehetsz.</p>
+		<p class="algoritmus">Algoritmus:
+1. Az árakat egy objektumban tároljuk: termék -&gt; kezelésmód -&gt; Ft/m2.
+2. A form mezőiből (termék, szélesség, hossz, darabszám, kezelés) kiolvassuk az értékeket.
+3. Egy darab területe = szélesség(m) * hossz(m). Az össz. terület = ez * darabszám.
+4. Bruttó összár = össz. terület * a kiválasztott kezeléshez tartozó egységár.
+5. "Kosárba" gombra a tételt hozzáadjuk egy tömbhöz, a kosarat újrarajzoljuk és összegezzük a végösszeget.</p>
+
+		<label for="termek">Termék</label>
+		<select id="termek">
+			<option value="Hajópadló">Hajópadló</option>
+			<option value="Tetőléc">Tetőléc</option>
+			<option value="Lambéria">Lambéria</option>
+		</select>
+
+		<label for="szelesseg">Szélesség (cm)</label>
+		<input type="number" id="szelesseg" min="1" step="0.5" value="9">
+
+		<label for="hossz">Hossz (m)</label>
+		<input type="number" id="hossz" min="0.1" step="0.1" value="6">
+
+		<label for="darabszam">Darabszám</label>
+		<input type="number" id="darabszam" min="1" step="1" value="20">
+
+		<fieldset>
+			<legend>Előkészítés</legend>
+			<div class="radio-sor">
+				<input type="radio" name="kezeles" id="kezeletlen" value="kezeletlen" checked>
+				<label for="kezeletlen" style="display:inline">kezelés nélkül</label>
+
+				<input type="radio" name="kezeles" id="impregnalva" value="impregnalva">
+				<label for="impregnalva" style="display:inline">impregnálva</label>
+
+				<input type="radio" name="kezeles" id="gyalulva" value="gyalulva">
+				<label for="gyalulva" style="display:inline">gyalulva</label>
+			</div>
+		</fieldset>
+
+		<button id="szamolGomb" type="button">Ár kiszámolása</button>
+		<button id="kosarbaGomb" type="button">Kosárba teszem</button>
+		<button id="peldaGomb" type="button" class="masodlagos">Példa betöltése (lambéria + tetőléc)</button>
+
+		<div class="eredmeny" id="furuszaru-eredmeny">
+			<p>Add meg az adatokat, majd kattints az "Ár kiszámolása" gombra.</p>
+		</div>
+
+		<div class="eredmeny" id="kosar-doboz" style="display:none;">
+			<p><strong>Kosár tartalma:</strong></p>
+			<table>
+				<thead>
+					<tr>
+						<th>Termék</th>
+						<th>Méret</th>
+						<th>Darab</th>
+						<th>Kezelés</th>
+						<th>Ár</th>
+					</tr>
+				</thead>
+				<tbody id="kosar-tabla-test"></tbody>
+			</table>
+			<p id="kosar-osszesen"></p>
+		</div>
+	</div>
+
+	<!-- 3. FELADAT: FUTÓVERSENY -->
+	<div class="feladat">
+		<h2>3. Futóverseny eredményei</h2>
+		<p class="leiras">10 fő nevezett a versenyre, egy fő nem jött el. Ki nyert, milyen gyors volt a legfiatalabb nevező, és hogyan néz ki a végeredmény?</p>
+		<p class="algoritmus">Algoritmus:
+1. Az indulókat objektumok tömbjeként tároljuk (rajtszám, név, születési dátum, idő - vagy null, ha nem jött el).
+2. Kiszűrjük azokat, akiknek van célba érkezési idejük (filter).
+3. Az időket "óra:perc" formátumból percekké alakítjuk, majd idő szerint növekvő sorrendbe rendezzük (sort) - az első a győztes.
+4. A legfiatalabb nevezőt a születési dátumok összehasonlításával (Date objektumok, reduce) találjuk meg - mindenkit nézünk, nem csak a célba érkezőket.
+5. A résztvevők számát a tömb hosszával (nevezettek), illetve a szűrt tömb hosszával (célba érkezők) kapjuk meg.
+6. jQuery-vel dinamikusan felépítjük az eredménytáblázat sorait és a dobogó (top 3) infografikát.</p>
+
+		<div class="eredmeny" id="verseny-osszegzes"></div>
+
+		<table id="verseny-tabla">
+			<thead>
+				<tr>
+					<th>Helyezés</th>
+					<th>Rajtszám</th>
+					<th>Név</th>
+					<th>Idő</th>
+				</tr>
+			</thead>
+			<tbody id="verseny-tabla-test"></tbody>
+		</table>
+
+		<div class="dobogo" id="dobogo"></div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(document).ready(function ($) {
+
+			/* ============================================================
+			   1. FELADAT: KÍNAI HOROSZKÓP + NYUGATI CSILLAGJEGY
+			   ============================================================ */
+
+			var allatjegyek = ['Patkány', 'Bivaly', 'Tigris', 'Nyúl', 'Sárkány', 'Kígyó',
+				'Ló', 'Kecske', 'Majom', 'Kakas', 'Kutya', 'Disznó'];
+
+			function kinaiAllatjegy(szuletesiEv) {
+				var index = (szuletesiEv - 1900) - Math.floor((szuletesiEv - 1900) / 12) * 12;
+				return allatjegyek[index];
+			}
+
+			function nyugatiCsillagjegy(honap, nap) {
+				var d = honap * 100 + nap;
+				if (d >= 321 && d <= 419) return 'Kos';
+				if (d >= 420 && d <= 520) return 'Bika';
+				if (d >= 521 && d <= 620) return 'Ikrek';
+				if (d >= 621 && d <= 722) return 'Rák';
+				if (d >= 723 && d <= 822) return 'Oroszlán';
+				if (d >= 823 && d <= 922) return 'Szűz';
+				if (d >= 923 && d <= 1022) return 'Mérleg';
+				if (d >= 1023 && d <= 1121) return 'Skorpió';
+				if (d >= 1122 && d <= 1221) return 'Nyilas';
+				if (d >= 1222 || d <= 119) return 'Bak';
+				if (d >= 120 && d <= 218) return 'Vízöntő';
+				return 'Halak';
+			}
+
+			// A mező change eseményén kell mindig újraszámolni
+			$('#szuldatum').on('change', function () {
+				var ertek = $(this).val(); // formátum: "ÉÉÉÉ-HH-NN"
+				console.log('Kiválasztott dátum:', ertek);
+
+				if (!ertek) {
+					$('#horoszkop-eredmeny').html('<p>Add meg a születési dátumod a fenti mezőben.</p>');
+					return;
+				}
+
+				var reszek = ertek.split('-');
+				var ev = parseInt(reszek[0], 10);
+				var honap = parseInt(reszek[1], 10);
+				var nap = parseInt(reszek[2], 10);
+
+				var csillagjegy = nyugatiCsillagjegy(honap, nap);
+				var allatjegy = kinaiAllatjegy(ev);
+				console.log('csillagjegy:', csillagjegy, '| kínai állatjegy:', allatjegy);
+
+				$('#horoszkop-eredmeny').html(
+					'<p>Nyugati csillagjegyed: <strong>' + csillagjegy + '</strong></p>' +
+					'<p>Kínai állatjegyed: <strong>' + allatjegy + '</strong></p>'
+				);
+			});
+
+
+			/* ============================================================
+			   2. FELADAT: FŰRÉSZÁRU KALKULÁTOR
+			   ============================================================ */
+
+			var arak = {
+				'Hajópadló': { kezeletlen: 9000, impregnalva: 10000, gyalulva: 16000 },
+				'Tetőléc': { kezeletlen: 7000, impregnalva: 9000, gyalulva: 12000 },
+				'Lambéria': { kezeletlen: 12000, impregnalva: 15000, gyalulva: 23000 }
+			};
+
+			var kezelesNev = { kezeletlen: 'kezelés nélkül', impregnalva: 'impregnálva', gyalulva: 'gyalulva' };
+
+			var kosarTartalom = [];
+
+			function forintFormatum(szam) {
+				return Math.round(szam).toLocaleString('hu-HU') + ' Ft';
+			}
+
+			function furuszaruSzamol(termek, szelessegCm, hosszM, darab, kezeles) {
+				var egysegar = arak[termek][kezeles];
+				var egyDbTerulet = (szelessegCm / 100) * hosszM;
+				var osszTerulet = egyDbTerulet * darab;
+				var brutto = osszTerulet * egysegar;
+				return { egysegar: egysegar, terulet: osszTerulet, ar: brutto };
+			}
+
+			function aktualisAdatok() {
+				return {
+					termek: $('#termek').val(),
+					szelesseg: parseFloat($('#szelesseg').val()),
+					hossz: parseFloat($('#hossz').val()),
+					darab: parseInt($('#darabszam').val(), 10),
+					kezeles: $('input[name="kezeles"]:checked').val()
+				};
+			}
+
+			function kosarUjrarajzol() {
+				var $test = $('#kosar-tabla-test');
+				$test.empty();
+				var vegosszeg = 0;
+
+				kosarTartalom.forEach(function (tetel) {
+					vegosszeg += tetel.ar;
+					$test.append(
+						'<tr>' +
+						'<td>' + tetel.termek + '</td>' +
+						'<td>' + tetel.szelesseg + ' cm x ' + tetel.hossz + ' m</td>' +
+						'<td>' + tetel.darab + ' db</td>' +
+						'<td>' + kezelesNev[tetel.kezeles] + '</td>' +
+						'<td>' + forintFormatum(tetel.ar) + '</td>' +
+						'</tr>'
+					);
+				});
+
+				if (kosarTartalom.length > 0) {
+					$('#kosar-doboz').show();
+					$('#kosar-osszesen').html('Végösszeg: <strong>' + forintFormatum(vegosszeg) + '</strong>');
+				} else {
+					$('#kosar-doboz').hide();
+				}
+			}
+
+			$('#szamolGomb').on('click', function () {
+				var adat = aktualisAdatok();
+				console.log('fűrészáru bemenet:', adat);
+
+				if (!adat.szelesseg || !adat.hossz || !adat.darab) {
+					$('#furuszaru-eredmeny').html('<p>Kérlek, tölts ki minden mezőt érvényes értékkel.</p>');
+					return;
+				}
+
+				var eredmeny = furuszaruSzamol(adat.termek, adat.szelesseg, adat.hossz, adat.darab, adat.kezeles);
+				console.log('fűrészáru eredmény:', eredmeny);
+
+				$('#furuszaru-eredmeny').html(
+					'<p>Egységár: <strong>' + forintFormatum(eredmeny.egysegar) + ' / m2</strong> (' + kezelesNev[adat.kezeles] + ')</p>' +
+					'<p>Összmennyiség: <strong>' + eredmeny.terulet.toFixed(2) + ' m2</strong></p>' +
+					'<p>Bruttó összár: <strong>' + forintFormatum(eredmeny.ar) + '</strong></p>'
+				);
+			});
+
+			$('#kosarbaGomb').on('click', function () {
+				var adat = aktualisAdatok();
+				if (!adat.szelesseg || !adat.hossz || !adat.darab) {
+					$('#furuszaru-eredmeny').html('<p>Kérlek, tölts ki minden mezőt érvényes értékkel.</p>');
+					return;
+				}
+				var eredmeny = furuszaruSzamol(adat.termek, adat.szelesseg, adat.hossz, adat.darab, adat.kezeles);
+				kosarTartalom.push({
+					termek: adat.termek,
+					szelesseg: adat.szelesseg,
+					hossz: adat.hossz,
+					darab: adat.darab,
+					kezeles: adat.kezeles,
+					ar: eredmeny.ar
+				});
+				kosarUjrarajzol();
+			});
+
+			// Betölti a leírásban szereplő példát: 9 cm x 6 m lambéria 20 db + 4 cm x 6 m tetőléc 10 db, gyalulva
+			$('#peldaGomb').on('click', function () {
+				kosarTartalom = [];
+				kosarTartalom.push(Object.assign({ termek: 'Lambéria', szelesseg: 9, hossz: 6, darab: 20, kezeles: 'gyalulva' },
+					{ ar: furuszaruSzamol('Lambéria', 9, 6, 20, 'gyalulva').ar }));
+				kosarTartalom.push(Object.assign({ termek: 'Tetőléc', szelesseg: 4, hossz: 6, darab: 10, kezeles: 'gyalulva' },
+					{ ar: furuszaruSzamol('Tetőléc', 4, 6, 10, 'gyalulva').ar }));
+				kosarUjrarajzol();
+			});
+
+
+			/* ============================================================
+			   3. FELADAT: FUTÓVERSENY
+			   ============================================================ */
+
+			var indulok = [
+				{ rajtszam: 1, nev: 'Kovács Elek', szuletes: '1982-09-30', ido: '13:10' },
+				{ rajtszam: 2, nev: 'Takács Erika', szuletes: '1984-05-06', ido: '12:35' },
+				{ rajtszam: 3, nev: 'Mérei Blanka', szuletes: '1979-06-10', ido: '13:37' },
+				{ rajtszam: 4, nev: 'Palkovics Emma', szuletes: '1988-08-25', ido: '12:37' },
+				{ rajtszam: 5, nev: 'Márton-Rogán Ábel', szuletes: '1991-03-19', ido: null },
+				{ rajtszam: 6, nev: 'Orbán Géza Lőrinc', szuletes: '1987-03-30', ido: '12:51' },
+				{ rajtszam: 7, nev: 'Gyulaházy Tamás', szuletes: '1992-04-05', ido: '13:37' },
+				{ rajtszam: 8, nev: 'Bakos Flóra Tímea', szuletes: '1996-07-08', ido: '13:05' },
+				{ rajtszam: 9, nev: 'Bauer Imre Máté', szuletes: '2001-10-10', ido: '14:03' },
+				{ rajtszam: 10, nev: 'Stein Barbara', szuletes: '1984-04-11', ido: '12:01' }
+			];
+
+			function idoPercre(ido) {
+				var reszek = ido.split(':');
+				return parseInt(reszek[0], 10) * 60 + parseInt(reszek[1], 10);
+			}
+
+			// célba érkezők, idő szerint növekvő sorrendben
+			var celbaErkezok = indulok.filter(function (f) { return f.ido; });
+			celbaErkezok.sort(function (a, b) { return idoPercre(a.ido) - idoPercre(b.ido); });
+
+			var gyoztes = celbaErkezok[0];
+
+			var legfiatalabb = indulok.reduce(function (legfiatalabb, aktualis) {
+				return new Date(aktualis.szuletes) > new Date(legfiatalabb.szuletes) ? aktualis : legfiatalabb;
+			});
+
+			console.log('győztes:', gyoztes.nev);
+			console.log('legfiatalabb nevező:', legfiatalabb.nev, legfiatalabb.szuletes);
+			console.log('nevezettek:', indulok.length, '| célba érkezők:', celbaErkezok.length);
+
+			// összegzés szöveg
+			$('#verseny-osszegzes').html(
+				'<p>A versenyt <strong>' + gyoztes.nev + '</strong> nyerte, <strong>' + gyoztes.ido + '</strong>-es idővel.</p>' +
+				'<p>A legfiatalabb nevező <strong>' + legfiatalabb.nev + '</strong> (sz.: ' + legfiatalabb.szuletes.split('-').reverse().join('.') + '.), ' +
+				(legfiatalabb.ido
+					? 'aki <strong>' + legfiatalabb.ido + '</strong> alatt ért célba.'
+					: 'de sajnos <strong>nem jött el</strong> a versenyre.') +
+				'</p>' +
+				'<p>A versenyre <strong>' + indulok.length + ' fő</strong> nevezett be, ebből <strong>' + celbaErkezok.length + ' fő</strong> ért célba.</p>'
+			);
+
+			// eredménytáblázat felépítése
+			var $versenyTest = $('#verseny-tabla-test');
+			celbaErkezok.forEach(function (f, i) {
+				var sorClass = i < 3 ? 'arany' : '';
+				$versenyTest.append(
+					'<tr class="' + sorClass + '">' +
+					'<td>' + (i + 1) + '.</td>' +
+					'<td>' + f.rajtszam + '</td>' +
+					'<td>' + f.nev + '</td>' +
+					'<td>' + f.ido + '</td>' +
+					'</tr>'
+				);
+			});
+			indulok.filter(function (f) { return !f.ido; }).forEach(function (f) {
+				$versenyTest.append(
+					'<tr class="nem-jott">' +
+					'<td>-</td>' +
+					'<td>' + f.rajtszam + '</td>' +
+					'<td>' + f.nev + '</td>' +
+					'<td>nem jött el</td>' +
+					'</tr>'
+				);
+			});
+
+			// dobogó (top 3) infografika
+			var eremek = ['🥇', '🥈', '🥉'];
+			var $dobogo = $('#dobogo');
+			var sorrend = [1, 0, 2]; // vizuálisan 2-1-3 helyezés balról jobbra
+			sorrend.forEach(function (idx) {
+				var f = celbaErkezok[idx];
+				if (!f) return;
+				$dobogo.append(
+					'<div class="hely helyezes-' + (idx + 1) + '">' +
+					'<div class="nev">' + f.nev + '<br>' + f.ido + '</div>' +
+					'<div class="oszlop"><span class="erem">' + eremek[idx] + '</span><span>' + (idx + 1) + '. hely</span></div>' +
+					'</div>'
+				);
+			});
+
+		});
+	</script>
+</body>
+
+</html>
