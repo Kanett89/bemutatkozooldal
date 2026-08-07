@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+	<meta charset="utf-8">
+	<title>Lapozó, vizsgaeredmény, moziülésrend, filmlisták, diagram</title>
+	<meta name="author" content="Kuti Anett">
+	<meta name="description" content="Lapozó (pagination), vizsgaeredmény kiértékelés, mozi ülésrend választó, filmlisták szűrése és oszlopdiagram - jQuery gyakorló feladatok.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		*,
+		*:before,
+		*:after {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: sans-serif;
+			background: #f4f2ee;
+			margin: 0;
+			padding: 2rem 1rem 4rem;
+			color: #2b2b2b;
+		}
+
+		h1 {
+			text-align: center;
+			margin-bottom: 0.25rem;
+		}
+
+		p.intro {
+			text-align: center;
+			max-width: 42rem;
+			margin: 0 auto 2rem;
+			color: #555;
+		}
+
+		a.back {
+			display: block;
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+
+		.feladat {
+			max-width: 60rem;
+			margin: 0 auto 1.75rem;
+			background: #fff;
+			border-radius: 0.5rem;
+			padding: 1.5rem 1.75rem;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+		}
+
+		.feladat h2 {
+			margin-top: 0;
+			font-size: 1.15rem;
+			border-bottom: 2px solid #e0dcd4;
+			padding-bottom: 0.5rem;
+		}
+
+		.feladat h3 {
+			font-size: 1rem;
+			margin: 1.5rem 0 0.5rem;
+		}
+
+		.feladat p.leiras {
+			color: #555;
+			font-style: italic;
+			margin-top: 0;
+		}
+
+		.feladat p.algoritmus {
+			background: #fbf7ec;
+			border-left: 4px solid #c9a54c;
+			padding: 0.6rem 0.9rem;
+			border-radius: 0.25rem;
+			font-size: 0.9rem;
+			color: #6b5a25;
+			white-space: pre-line;
+		}
+
+		.eredmeny {
+			background: #f4f2ee;
+			border-left: 4px solid #6b8f71;
+			padding: 0.75rem 1rem;
+			border-radius: 0.25rem;
+			margin-top: 0.75rem;
+		}
+
+		.eredmeny p {
+			margin: 0.3rem 0;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-top: 0.5rem;
+			font-size: 0.85rem;
+		}
+
+		th,
+		td {
+			border: 1px solid #ddd;
+			padding: 0.35rem 0.5rem;
+			text-align: left;
+		}
+
+		th {
+			background: #e9e6df;
+			position: sticky;
+			top: 0;
+		}
+
+		.tabla-doboz {
+			max-height: 22rem;
+			overflow: auto;
+			border: 1px solid #ddd;
+			border-radius: 0.25rem;
+			margin-top: 0.5rem;
+		}
+
+		.tabla-doboz table {
+			margin-top: 0;
+		}
+
+		tr.sikeres td {
+			background: #eaf6ea;
+		}
+
+		tr.sikertelen td {
+			background: #fbeaea;
+		}
+
+		button {
+			padding: 0.45rem 1rem;
+			font-weight: bold;
+			cursor: pointer;
+			border: none;
+			border-radius: 0.3rem;
+			background: #6b8f71;
+			color: #fff;
+		}
+
+		button:hover {
+			opacity: 0.9;
+		}
+
+		button:disabled {
+			background: #ccc;
+			cursor: not-allowed;
+			opacity: 1;
+		}
+
+		/* --- 1. Lapozó --- */
+		#lapozo {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.4rem;
+			align-items: center;
+			margin-top: 0.75rem;
+		}
+
+		.lap-gomb {
+			background: #fff;
+			color: #444;
+			border: 1px solid #ccc;
+			padding: 0.4rem 0.7rem;
+			border-radius: 0.3rem;
+			cursor: pointer;
+			font-size: 0.85rem;
+			font-weight: normal;
+		}
+
+		.lap-gomb.aktiv {
+			background: #6b8f71;
+			color: #fff;
+			border-color: #6b8f71;
+			font-weight: bold;
+		}
+
+		#lista-elemek {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(3.5rem, 1fr));
+			gap: 0.4rem;
+			margin-top: 1rem;
+		}
+
+		.lista-elem {
+			background: #f4f2ee;
+			border: 1px solid #e0dcd4;
+			border-radius: 0.25rem;
+			text-align: center;
+			padding: 0.4rem 0;
+			font-size: 0.8rem;
+			color: #666;
+		}
+
+		/* --- 3. Mozi ülésrend --- */
+		.mozi {
+			text-align: center;
+			margin-top: 1rem;
+		}
+
+		.vaszon {
+			background: linear-gradient(180deg, #ddd, #f4f2ee);
+			color: #888;
+			letter-spacing: 0.3rem;
+			font-size: 0.8rem;
+			font-weight: bold;
+			padding: 0.5rem;
+			border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+			margin: 0 auto 2rem;
+			max-width: 26rem;
+		}
+
+		.ules-sor {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.35rem;
+			margin-bottom: 0.35rem;
+		}
+
+		.sor-cimke {
+			width: 1.2rem;
+			font-size: 0.8rem;
+			font-weight: bold;
+			color: #888;
+		}
+
+		.ules {
+			width: 1.75rem;
+			height: 1.75rem;
+			border-radius: 0.3rem 0.3rem 0.6rem 0.6rem;
+			background: #cfe8d3;
+			border: 1px solid #9fc9a6;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 0.7rem;
+			color: #3a6b41;
+			cursor: pointer;
+		}
+
+		.ules:hover {
+			background: #b4dcbb;
+		}
+
+		.ules.kivalasztott {
+			background: #6b8f71;
+			border-color: #4d6f52;
+			color: #fff;
+		}
+
+		.ules.foglalt {
+			background: #e2a3a3;
+			border-color: #c96b6b;
+			color: #7a2f2f;
+			cursor: not-allowed;
+		}
+
+		.folyoso {
+			width: 1rem;
+		}
+
+		.jelmagyarazat {
+			display: flex;
+			justify-content: center;
+			gap: 1.5rem;
+			margin-top: 1.25rem;
+			font-size: 0.85rem;
+			flex-wrap: wrap;
+		}
+
+		.jelmagyarazat span {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+		}
+
+		.jelmagyarazat i {
+			width: 1.1rem;
+			height: 1.1rem;
+			border-radius: 0.25rem;
+			display: inline-block;
+		}
+
+		.jm-szabad {
+			background: #cfe8d3;
+			border: 1px solid #9fc9a6;
+		}
+
+		.jm-kivalasztott {
+			background: #6b8f71;
+		}
+
+		.jm-foglalt {
+			background: #e2a3a3;
+			border: 1px solid #c96b6b;
+		}
+
+		/* --- 5. Diagram --- */
+		.diagram-terulet {
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
+			gap: 3rem;
+			height: 280px;
+			margin-top: 2rem;
+			padding-top: 2rem;
+		}
+
+		.honap-csoport {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.oszlopok {
+			display: flex;
+			align-items: flex-end;
+			gap: 0.5rem;
+			height: 220px;
+		}
+
+		.oszlop {
+			width: 2.2rem;
+			border-radius: 0.25rem 0.25rem 0 0;
+			position: relative;
+		}
+
+		.oszlop .ertek {
+			position: absolute;
+			top: -1.35rem;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 0.75rem;
+			font-weight: bold;
+			color: #444;
+			white-space: nowrap;
+		}
+
+		.honap-nev {
+			margin-top: 0.6rem;
+			font-weight: bold;
+			font-size: 0.9rem;
+		}
+
+		.diagram-jelmagyarazat {
+			display: flex;
+			justify-content: center;
+			gap: 1.5rem;
+			margin-top: 1rem;
+			font-size: 0.85rem;
+		}
+
+		.diagram-jelmagyarazat span {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.4rem;
+		}
+
+		.diagram-jelmagyarazat i {
+			width: 1rem;
+			height: 1rem;
+			border-radius: 0.2rem;
+			display: inline-block;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>Lapozó, vizsga, moziülés, filmlisták, diagram</h1>
+	<p class="intro">Öt további feladat: elemek lapozása 25-ösével, vizsgaeredmények kiértékelése, mozi ülésrend választó, filmadatok szűrése és egy oszlopdiagram táblázatból.</p>
+	<a class="back" href="index.html">&larr; Vissza a főoldalra</a>
+
+	<!-- 1. FELADAT: LAPOZÓ -->
+	<div class="feladat">
+		<h2>1. Lapozó (pagination) - 250 elem, 25-ösével</h2>
+		<p class="leiras">1-25 | 26-50 | 51-75 | ... | 226-250 - kattints egy tartományra, hogy megnézd az abba eső elemeket.</p>
+		<p class="algoritmus">Algoritmus:
+1. Az oldalak száma = egészrész felfelé kerekítve(összes elem / oldalankénti elemszám) = 250 / 25 = 10 oldal.
+2. Minden oldalhoz kiszámoljuk a tartomány elejét (oldalindex * 25 + 1) és végét (min((oldalindex+1) * 25, összes elem)), ebből épül fel a gomb felirata.
+3. Gombra kattintva eltároljuk az aktív oldal indexét, majd újrarajzoljuk a lapozót (az aktív gomb kiemelésével) és a hozzá tartozó elemlistát.</p>
+
+		<div id="lapozo"></div>
+		<p class="eredmeny" id="lapozo-info" style="margin:0.75rem 0 0;"></p>
+		<div id="lista-elemek"></div>
+	</div>
+
+	<!-- 2. FELADAT: VIZSGA -->
+	<div class="feladat">
+		<h2>2. Vizsgaeredmények kiértékelése</h2>
+		<p class="leiras">$vizsga = [98, 53, 45, 96, 35, 45, 55, 98, 64, 80, 66, 45, 68, 93, 55] - 50%-tól sikeres a vizsga. Hány embernek sikerült?</p>
+		<p class="algoritmus">Algoritmus:
+1. Végigmegyünk a pontszámok tömbjén (filter), és megszámoljuk, hányan érték el legalább az 50 pontot.
+2. A találatok száma adja a sikeres vizsgázók létszámát, ebből százalékot is számolunk a teljes létszámhoz képest.</p>
+
+		<div class="eredmeny" id="vizsga-eredmeny"></div>
+		<div class="tabla-doboz">
+			<table>
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Pontszám</th>
+						<th>Eredmény</th>
+					</tr>
+				</thead>
+				<tbody id="vizsga-tabla"></tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- 3. FELADAT: MOZI ÜLÉSREND -->
+	<div class="feladat">
+		<h2>3. Mozi ülésrend választó</h2>
+		<p class="leiras">Válaszd ki a helyeidet! Néhány hely már alapból foglalt, ezekre nem lehet kattintani.</p>
+		<p class="algoritmus">Algoritmus:
+1. A termet sorokkal (A-G) és soronkénti székszámmal (1-10) modellezzük, középen egy folyosóval (5. és 6. szék között).
+2. Néhány helyet előre "foglaltnak" jelölünk (tömbben tároljuk az azonosítóikat, pl. "C4"), ezekre kattintva nem történik semmi.
+3. Egy szabad székre kattintva jQuery-vel hozzáadjuk/levesszük a "kivalasztott" osztályt (toggleClass), és frissítjük a kiválasztott helyek listáját.</p>
+
+		<div class="mozi">
+			<div class="vaszon">VÁSZON</div>
+			<div id="ulesek"></div>
+		</div>
+
+		<div class="jelmagyarazat">
+			<span><i class="jm-szabad"></i> Szabad</span>
+			<span><i class="jm-kivalasztott"></i> Kiválasztott</span>
+			<span><i class="jm-foglalt"></i> Foglalt</span>
+		</div>
+
+		<p class="eredmeny" id="ules-info"></p>
+	</div>
+
+	<!-- 4. FELADAT: FILMLISTÁK -->
+	<div class="feladat">
+		<h2>4. Filmlisták szűrése</h2>
+		<p class="leiras">Az IMDB Top 250 első 30 filmjéből (a lista már értékelés szerint csökkenő sorrendben van) 3 külön táblázatba szűrjük a kért filmeket.</p>
+		<p class="algoritmus">Algoritmus:
+1. A filmeket objektumok tömbjeként tároljuk (cím, év, értékelés, rendező, perc, műfaj-tömb, szereplők).
+2. "2010 előtt készültek": filter(év &lt; 2010).
+3. "2000-ig, az első 5 között voltak": a tömb első 5 elemét vesszük (slice(0,5)), majd ebből szűrjük az év &lt;= 2000 találatokat - tehát a rangsorban ÉS az évben is meg kell felelniük.
+4. "Első 10 között és Sci-Fi": a tömb első 10 eleme (slice(0,10)) közül azok, amelyek műfaj-tömbje tartalmazza a "Sci-Fi" elemet.</p>
+
+		<h3>2010 előtt készült filmek</h3>
+		<div class="tabla-doboz"><table><thead><tr><th>Cím</th><th>Év</th><th>Értékelés</th><th>Rendező</th><th>Perc</th></tr></thead><tbody id="film-2010-elott"></tbody></table></div>
+
+		<h3>2000-ig készültek és az első 5 (legjobb értékelésű) között voltak</h3>
+		<div class="tabla-doboz"><table><thead><tr><th>Cím</th><th>Év</th><th>Értékelés</th><th>Rendező</th><th>Perc</th></tr></thead><tbody id="film-elso5-2000"></tbody></table></div>
+
+		<h3>Első 10 között szerepelnek és Sci-Fik</h3>
+		<div class="tabla-doboz"><table><thead><tr><th>Cím</th><th>Év</th><th>Értékelés</th><th>Rendező</th><th>Műfaj</th></tr></thead><tbody id="film-top10-scifi"></tbody></table></div>
+	</div>
+
+	<!-- 5. FELADAT (SZORGALMI): DIAGRAM -->
+	<div class="feladat">
+		<h2>Szorgalmi: gyümölcs eladások oszlopdiagramja</h2>
+		<p class="leiras">Narancs, banán és alma havi eladásai (db) - a táblázat adataiból dinamikusan generált oszlopdiagram.</p>
+		<p class="algoritmus">Algoritmus:
+1. A táblázat adatait hónaponkénti objektumok tömbjeként tároljuk: {honap, narancs, banan, alma}.
+2. Megkeressük a legnagyobb előforduló értéket (Math.max), ez lesz a skála 100%-a.
+3. Minden hónaphoz és minden gyümölcshöz kiszámoljuk az oszlop magasságát százalékban: (érték / maxérték) * 100.
+4. jQuery-vel felépítjük a hónap-csoportokat, bennük a 3 színes oszloppal és az érték felirattal.</p>
+
+		<div class="diagram-terulet" id="diagram"></div>
+		<div class="diagram-jelmagyarazat" id="diagram-jelmagyarazat"></div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(document).ready(function ($) {
+
+			/* ============================================================
+			   1. FELADAT: LAPOZÓ (250 elem, 25-ösével)
+			   ============================================================ */
+
+			var OSSZES_ELEM = 250;
+			var OLDALANKENT = 25;
+			var OLDALAK_SZAMA = Math.ceil(OSSZES_ELEM / OLDALANKENT);
+			var aktivOldal = 0;
+
+			function oldalTartomany(oldalIndex) {
+				var tol = oldalIndex * OLDALANKENT + 1;
+				var ig = Math.min((oldalIndex + 1) * OLDALANKENT, OSSZES_ELEM);
+				return { tol: tol, ig: ig };
+			}
+
+			function lapozoFelepit() {
+				var $lapozo = $('#lapozo').empty();
+
+				$('<button>', { class: 'lap-gomb', text: '‹ Előző', disabled: aktivOldal === 0 })
+					.on('click', function () { oldalValtas(aktivOldal - 1); })
+					.appendTo($lapozo);
+
+				for (var i = 0; i < OLDALAK_SZAMA; i++) {
+					var tartomany = oldalTartomany(i);
+					$('<button>', {
+						class: 'lap-gomb' + (i === aktivOldal ? ' aktiv' : ''),
+						text: tartomany.tol + '-' + tartomany.ig,
+						'data-oldal': i
+					}).appendTo($lapozo);
+				}
+
+				$('<button>', { class: 'lap-gomb', text: 'Következő ›', disabled: aktivOldal === OLDALAK_SZAMA - 1 })
+					.on('click', function () { oldalValtas(aktivOldal + 1); })
+					.appendTo($lapozo);
+			}
+
+			function elemekMegjelenit() {
+				var tartomany = oldalTartomany(aktivOldal);
+				var $cont = $('#lista-elemek').empty();
+
+				for (var i = tartomany.tol; i <= tartomany.ig; i++) {
+					$('<div>', { class: 'lista-elem', text: '#' + i }).appendTo($cont);
+				}
+
+				$('#lapozo-info').html(
+					'<strong>' + tartomany.tol + '-' + tartomany.ig + '.</strong> elem (' +
+					(aktivOldal + 1) + '. / ' + OLDALAK_SZAMA + ' oldal, összesen ' + OSSZES_ELEM + ' elemből)'
+				);
+			}
+
+			function oldalValtas(ujOldal) {
+				if (ujOldal < 0 || ujOldal >= OLDALAK_SZAMA) { return; }
+				aktivOldal = ujOldal;
+				console.log('aktív oldal:', aktivOldal, oldalTartomany(aktivOldal));
+				lapozoFelepit();
+				elemekMegjelenit();
+			}
+
+			$('#lapozo').on('click', '.lap-gomb[data-oldal]', function () {
+				oldalValtas(parseInt($(this).data('oldal'), 10));
+			});
+
+			lapozoFelepit();
+			elemekMegjelenit();
+
+
+			/* ============================================================
+			   2. FELADAT: VIZSGAEREDMÉNYEK
+			   ============================================================ */
+
+			var vizsga = [98, 53, 45, 96, 35, 45, 55, 98, 64, 80, 66, 45, 68, 93, 55];
+			var HATAR_SZAZALEK = 50;
+
+			var sikeresek = vizsga.filter(function (pontszam) { return pontszam >= HATAR_SZAZALEK; });
+
+			console.log('vizsga eredmények:', vizsga);
+			console.log('sikeresek:', sikeresek, '| darab:', sikeresek.length);
+
+			var szazalek = (sikeresek.length / vizsga.length * 100).toFixed(1);
+
+			$('#vizsga-eredmeny').html(
+				'<p><strong>' + sikeresek.length + ' főnek</strong> sikerült a vizsga a ' + vizsga.length + ' vizsgázóból (' + szazalek + '%), ' +
+				'<strong>' + (vizsga.length - sikeresek.length) + ' fő</strong> nem érte el az 50 pontot.</p>'
+			);
+
+			var $vizsgaTest = $('#vizsga-tabla');
+			vizsga.forEach(function (pontszam, index) {
+				var sikeres = pontszam >= HATAR_SZAZALEK;
+				$('<tr>', { class: sikeres ? 'sikeres' : 'sikertelen' })
+					.append('<td>' + (index + 1) + '.</td>')
+					.append('<td>' + pontszam + '</td>')
+					.append('<td>' + (sikeres ? 'Sikeres' : 'Sikertelen') + '</td>')
+					.appendTo($vizsgaTest);
+			});
+
+
+			/* ============================================================
+			   3. FELADAT: MOZI ÜLÉSREND
+			   ============================================================ */
+
+			var SOROK = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+			var SZEKEK_SORONKENT = 10;
+			var FOGLALT_HELYEK = ['C4', 'C5', 'D5', 'D6', 'E7', 'F2', 'B9', 'G10'];
+
+			var $ulesek = $('#ulesek');
+			SOROK.forEach(function (sor) {
+				var $sor = $('<div>', { class: 'ules-sor' });
+				$('<div>', { class: 'sor-cimke', text: sor }).appendTo($sor);
+
+				for (var szam = 1; szam <= SZEKEK_SORONKENT; szam++) {
+					var azonosito = sor + szam;
+					var foglalt = FOGLALT_HELYEK.indexOf(azonosito) !== -1;
+
+					$('<div>', {
+						class: 'ules' + (foglalt ? ' foglalt' : ''),
+						text: szam,
+						'data-id': azonosito
+					}).appendTo($sor);
+
+					if (szam === 5) {
+						$('<div>', { class: 'folyoso' }).appendTo($sor);
+					}
+				}
+
+				$sor.appendTo($ulesek);
+			});
+
+			function ulesInfoFrissit() {
+				var $kivalasztott = $('.ules.kivalasztott');
+				var helyek = $kivalasztott.map(function () { return $(this).data('id'); }).get();
+
+				console.log('kiválasztott helyek:', helyek);
+
+				if (helyek.length === 0) {
+					$('#ules-info').text('Még nem választottál helyet.');
+				} else {
+					$('#ules-info').html('Kiválasztott helyek (' + helyek.length + ' db): <strong>' + helyek.join(', ') + '</strong>');
+				}
+			}
+
+			$('#ulesek').on('click', '.ules:not(.foglalt)', function () {
+				$(this).toggleClass('kivalasztott');
+				ulesInfoFrissit();
+			});
+
+			ulesInfoFrissit();
+
+
+			/* ============================================================
+			   4. FELADAT: FILMLISTÁK
+			   ============================================================ */
+
+			var filmek = [
+				{ cim: 'A remény rabjai', ev: 1994, ertekeles: 9.3, rendezo: 'Frank Darabont', perc: 142, mufaj: ['Drama'] },
+				{ cim: 'A keresztapa', ev: 1972, ertekeles: 9.2, rendezo: 'Francis Ford Coppola', perc: 175, mufaj: ['Crime', 'Drama'] },
+				{ cim: 'A sötét lovag', ev: 2008, ertekeles: 9.0, rendezo: 'Christopher Nolan', perc: 152, mufaj: ['Action', 'Crime', 'Drama'] },
+				{ cim: 'A keresztapa II', ev: 1974, ertekeles: 9.0, rendezo: 'Francis Ford Coppola', perc: 202, mufaj: ['Crime', 'Drama'] },
+				{ cim: 'Tizenkét dühös ember', ev: 1957, ertekeles: 9.0, rendezo: 'Sidney Lumet', perc: 96, mufaj: ['Crime', 'Drama'] },
+				{ cim: 'A Gyűrűk Ura: A király visszatér', ev: 2003, ertekeles: 8.9, rendezo: 'Peter Jackson', perc: 201, mufaj: ['Action', 'Adventure', 'Drama'] },
+				{ cim: 'Ponyvaregény', ev: 1994, ertekeles: 8.9, rendezo: 'Quentin Tarantino', perc: 154, mufaj: ['Crime', 'Drama'] },
+				{ cim: 'Schindler listája', ev: 1993, ertekeles: 8.9, rendezo: 'Steven Spielberg', perc: 195, mufaj: ['Biography', 'Drama', 'History'] },
+				{ cim: 'Eredet', ev: 2010, ertekeles: 8.8, rendezo: 'Christopher Nolan', perc: 148, mufaj: ['Action', 'Adventure', 'Sci-Fi'] },
+				{ cim: 'Harcosok klubja', ev: 1999, ertekeles: 8.8, rendezo: 'David Fincher', perc: 139, mufaj: ['Drama'] },
+				{ cim: 'A Gyűrűk Ura: A gyűrű szövetsége', ev: 2001, ertekeles: 8.8, rendezo: 'Peter Jackson', perc: 178, mufaj: ['Action', 'Adventure', 'Drama'] },
+				{ cim: 'Forrest Gump', ev: 1994, ertekeles: 8.8, rendezo: 'Robert Zemeckis', perc: 142, mufaj: ['Drama', 'Romance'] },
+				{ cim: 'A Jó, a Rossz és a Csúf', ev: 1966, ertekeles: 8.8, rendezo: 'Sergio Leone', perc: 161, mufaj: ['Western'] },
+				{ cim: 'A Gyűrűk Ura: A két torony', ev: 2002, ertekeles: 8.7, rendezo: 'Peter Jackson', perc: 179, mufaj: ['Action', 'Adventure', 'Drama'] },
+				{ cim: 'Mátrix', ev: 1999, ertekeles: 8.7, rendezo: 'Lana Wachowski, Lilly Wachowski', perc: 136, mufaj: ['Action', 'Sci-Fi'] },
+				{ cim: 'Nagymenők', ev: 1990, ertekeles: 8.7, rendezo: 'Martin Scorsese', perc: 146, mufaj: ['Biography', 'Crime', 'Drama'] },
+				{ cim: 'A Birodalom visszavág', ev: 1980, ertekeles: 8.7, rendezo: 'Irvin Kershner', perc: 124, mufaj: ['Action', 'Adventure', 'Fantasy'] },
+				{ cim: 'Száll a kakukk fészkére', ev: 1975, ertekeles: 8.7, rendezo: 'Milos Forman', perc: 133, mufaj: ['Drama'] },
+				{ cim: 'Élősködők', ev: 2019, ertekeles: 8.6, rendezo: 'Bong Joon Ho', perc: 132, mufaj: ['Comedy', 'Drama', 'Thriller'] },
+				{ cim: 'Csillagok között', ev: 2014, ertekeles: 8.6, rendezo: 'Christopher Nolan', perc: 169, mufaj: ['Adventure', 'Drama', 'Sci-Fi'] },
+				{ cim: 'Isten városa', ev: 2002, ertekeles: 8.6, rendezo: 'Fernando Meirelles, Kátia Lund', perc: 130, mufaj: ['Crime', 'Drama'] },
+				{ cim: 'Chihiro szellemországban', ev: 2001, ertekeles: 8.6, rendezo: 'Hayao Miyazaki', perc: 125, mufaj: ['Animation', 'Adventure', 'Family'] },
+				{ cim: 'Ryan közlegény megmentése', ev: 1998, ertekeles: 8.6, rendezo: 'Steven Spielberg', perc: 169, mufaj: ['Drama', 'War'] },
+				{ cim: 'Halálsoron', ev: 1999, ertekeles: 8.6, rendezo: 'Frank Darabont', perc: 189, mufaj: ['Crime', 'Drama', 'Fantasy'] },
+				{ cim: 'Az élet szép', ev: 1997, ertekeles: 8.6, rendezo: 'Roberto Benigni', perc: 116, mufaj: ['Comedy', 'Drama', 'Romance'] },
+				{ cim: 'Hetedik', ev: 1995, ertekeles: 8.6, rendezo: 'David Fincher', perc: 127, mufaj: ['Crime', 'Drama', 'Mystery'] },
+				{ cim: 'A bárányok hallgatnak', ev: 1991, ertekeles: 8.6, rendezo: 'Jonathan Demme', perc: 118, mufaj: ['Crime', 'Drama', 'Thriller'] },
+				{ cim: 'Csillagok háborúja', ev: 1977, ertekeles: 8.6, rendezo: 'George Lucas', perc: 121, mufaj: ['Action', 'Adventure', 'Fantasy'] },
+				{ cim: 'Harakiri', ev: 1962, ertekeles: 8.6, rendezo: 'Masaki Kobayashi', perc: 133, mufaj: ['Action', 'Drama', 'Mystery'] },
+				{ cim: 'A hét szamuráj', ev: 1954, ertekeles: 8.6, rendezo: 'Akira Kurosawa', perc: 207, mufaj: ['Action', 'Adventure', 'Drama'] }
+			];
+
+			function filmSorHtml(film, mufajIs) {
+				var sor = '<tr><td>' + film.cim + '</td><td>' + film.ev + '</td><td>' + film.ertekeles.toFixed(1) + '</td><td>' + film.rendezo + '</td>';
+				sor += mufajIs ? ('<td>' + film.mufaj.join(', ') + '</td>') : ('<td>' + film.perc + '</td>');
+				sor += '</tr>';
+				return sor;
+			}
+
+			// a) 2010 előtt készültek
+			var film2010Elott = filmek.filter(function (f) { return f.ev < 2010; });
+			$('#film-2010-elott').html(film2010Elott.map(function (f) { return filmSorHtml(f, false); }).join(''));
+
+			// b) az első 5 (rangsor) között ÉS 2000-ig készültek
+			var elso5 = filmek.slice(0, 5);
+			var elso5es2000ig = elso5.filter(function (f) { return f.ev <= 2000; });
+			$('#film-elso5-2000').html(elso5es2000ig.map(function (f) { return filmSorHtml(f, false); }).join(''));
+
+			// c) az első 10 (rangsor) között ÉS Sci-Fi
+			var elso10 = filmek.slice(0, 10);
+			var elso10Scifi = elso10.filter(function (f) { return f.mufaj.indexOf('Sci-Fi') !== -1; });
+			$('#film-top10-scifi').html(elso10Scifi.map(function (f) { return filmSorHtml(f, true); }).join(''));
+
+			console.log('2010 előtt:', film2010Elott.length, 'db');
+			console.log('első 5-ben és 2000-ig:', elso5es2000ig.map(function (f) { return f.cim; }));
+			console.log('első 10-ben és Sci-Fi:', elso10Scifi.map(function (f) { return f.cim; }));
+
+
+			/* ============================================================
+			   SZORGALMI FELADAT: OSZLOPDIAGRAM
+			   ============================================================ */
+
+			var honapAdatok = [
+				{ honap: 'Január', narancs: 50, banan: 60, alma: 40 },
+				{ honap: 'Február', narancs: 120, banan: 200, alma: 240 },
+				{ honap: 'Március', narancs: 140, banan: 160, alma: 300 }
+			];
+
+			var gyumolcsok = [
+				{ kulcs: 'narancs', nev: 'Narancs', szin: '#f28c28' },
+				{ kulcs: 'banan', nev: 'Banán', szin: '#f4d35e' },
+				{ kulcs: 'alma', nev: 'Alma', szin: '#e0574c' }
+			];
+
+			var maxErtek = 0;
+			honapAdatok.forEach(function (honap) {
+				gyumolcsok.forEach(function (gy) {
+					if (honap[gy.kulcs] > maxErtek) { maxErtek = honap[gy.kulcs]; }
+				});
+			});
+
+			console.log('maximális érték a diagramhoz:', maxErtek);
+
+			var $diagram = $('#diagram');
+			honapAdatok.forEach(function (honap) {
+				var $csoport = $('<div>', { class: 'honap-csoport' });
+				var $oszlopok = $('<div>', { class: 'oszlopok' });
+
+				gyumolcsok.forEach(function (gy) {
+					var ertek = honap[gy.kulcs];
+					var magassagSzazalek = (ertek / maxErtek) * 100;
+
+					var $oszlop = $('<div>', { class: 'oszlop' }).css({
+						height: magassagSzazalek + '%',
+						background: gy.szin
+					});
+					$('<span>', { class: 'ertek', text: ertek }).appendTo($oszlop);
+					$oszlop.appendTo($oszlopok);
+				});
+
+				$oszlopok.appendTo($csoport);
+				$('<div>', { class: 'honap-nev', text: honap.honap }).appendTo($csoport);
+				$csoport.appendTo($diagram);
+			});
+
+			var $jelmagyarazat = $('#diagram-jelmagyarazat');
+			gyumolcsok.forEach(function (gy) {
+				var $elem = $('<span>');
+				$('<i>').css('background', gy.szin).appendTo($elem);
+				$elem.append(gy.nev);
+				$elem.appendTo($jelmagyarazat);
+			});
+
+		});
+	</script>
+</body>
+
+</html>
