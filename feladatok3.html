@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+	<meta charset="utf-8">
+	<title>Új feladatsor - karakterszám, képméret, háromszög, partnerlogók, szállítási díj</title>
+	<meta name="author" content="Kuti Anett">
+	<meta name="description" content="5 újabb JavaScript/jQuery gyakorló feladat megoldása: karakterszám alapú színezés, kép orientáció, CSS háromszög, partner logó rács, sör kiszállítási díj.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+		*,
+		*:before,
+		*:after {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: sans-serif;
+			background: #f4f2ee;
+			margin: 0;
+			padding: 2rem 1rem 4rem;
+			color: #2b2b2b;
+		}
+
+		h1 {
+			text-align: center;
+			margin-bottom: 0.25rem;
+		}
+
+		p.intro {
+			text-align: center;
+			max-width: 42rem;
+			margin: 0 auto 2rem;
+			color: #555;
+		}
+
+		a.back {
+			display: block;
+			text-align: center;
+			margin-bottom: 2rem;
+		}
+
+		.feladat {
+			max-width: 50rem;
+			margin: 0 auto 1.75rem;
+			background: #fff;
+			border-radius: 0.5rem;
+			padding: 1.5rem 1.75rem;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+		}
+
+		.feladat h2 {
+			margin-top: 0;
+			font-size: 1.15rem;
+			border-bottom: 2px solid #e0dcd4;
+			padding-bottom: 0.5rem;
+		}
+
+		.feladat p.leiras {
+			color: #555;
+			font-style: italic;
+			margin-top: 0;
+		}
+
+		.feladat p.algoritmus {
+			background: #fbf7ec;
+			border-left: 4px solid #c9a54c;
+			padding: 0.6rem 0.9rem;
+			border-radius: 0.25rem;
+			font-size: 0.9rem;
+			color: #6b5a25;
+			white-space: pre-line;
+		}
+
+		.eredmeny {
+			background: #f4f2ee;
+			border-left: 4px solid #6b8f71;
+			padding: 0.75rem 1rem;
+			border-radius: 0.25rem;
+			margin-top: 0.75rem;
+		}
+
+		.eredmeny p {
+			margin: 0.3rem 0;
+		}
+
+		label {
+			display: block;
+			margin-top: 0.75rem;
+			font-weight: bold;
+			font-size: 0.92rem;
+		}
+
+		input[type="text"],
+		input[type="number"] {
+			width: 100%;
+			padding: 0.5rem;
+			margin-top: 0.25rem;
+			font-family: inherit;
+			font-size: 1rem;
+		}
+
+		button {
+			padding: 0.5rem 1.25rem;
+			font-weight: bold;
+			cursor: pointer;
+			border: none;
+			border-radius: 0.3rem;
+			background: #6b8f71;
+			color: #fff;
+			margin-top: 1rem;
+		}
+
+		button:hover {
+			opacity: 0.9;
+		}
+
+		/* --- 1. feladat --- */
+		#szoveg-kimenet {
+			font-size: 1.4rem;
+			font-weight: bold;
+			word-break: break-word;
+		}
+
+		#szoveg-kimenet.kek {
+			color: #2b6cb0;
+		}
+
+		#szoveg-kimenet.piros {
+			color: #c0392b;
+		}
+
+		/* --- 2. feladat --- */
+		#kep-doboz img {
+			max-width: 100%;
+			height: auto;
+			display: block;
+			margin: 0.75rem auto 0;
+			border-radius: 0.25rem;
+		}
+
+		#kep-doboz img.allo {
+			border: solid 5px #6b8f71;
+		}
+
+		#kep-doboz img.fekvo {
+			border: solid 5px #fcc647;
+		}
+
+		#kep-doboz img.negyzetes {
+			border: solid 5px #a864a8;
+		}
+
+		/* --- 3. feladat --- */
+		.haromszog-terulet {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 240px;
+			background: #fafafa;
+			border-radius: 0.25rem;
+			margin-top: 0.75rem;
+		}
+
+		#haromszog {
+			background: linear-gradient(135deg, #6b8f71, #4d6f52);
+			-webkit-clip-path: polygon(0 100%, 100% 100%, 50% 0);
+			clip-path: polygon(0 100%, 100% 100%, 50% 0);
+		}
+
+		/* --- 4. feladat --- */
+		#partner-racs {
+			display: grid;
+			gap: 0.75rem;
+			margin-top: 1rem;
+		}
+
+		.partner-logo {
+			background: #eee;
+			border-radius: 0.35rem;
+			padding: 1rem 0.5rem;
+			text-align: center;
+			font-size: 0.85rem;
+			font-weight: bold;
+			color: #555;
+			min-height: 3.5rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		/* --- 5. feladat --- */
+		.doboz-sor {
+			display: flex;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+			margin-top: 0.5rem;
+		}
+
+		.doboz {
+			background: #fff8e6;
+			border: 2px solid #fcc647;
+			border-radius: 0.3rem;
+			padding: 0.4rem 0.7rem;
+			font-size: 0.85rem;
+			font-weight: bold;
+		}
+
+		.doboz.harmas {
+			background: #eef6ff;
+			border-color: #6bb0d9;
+		}
+	</style>
+</head>
+
+<body>
+
+	<h1>Új feladatsor</h1>
+	<p class="intro">Öt újabb önálló feladat: karakterszám alapú szövegszínezés, kép orientáció felismerés, CSS háromszög rajzolás, automatikus partner logó rács és egy sörös webshop szállítási díj kalkulátora.</p>
+	<a class="back" href="index.html">&larr; Vissza a főoldalra</a>
+
+	<!-- 1. FELADAT -->
+	<div class="feladat">
+		<h2>1. Karakterszám alapú szövegszínezés</h2>
+		<p class="leiras">Adj meg egy szót vagy mondatot! Ha a karakterek száma páros, kék, ha páratlan, piros színnel jelenik meg.</p>
+		<p class="algoritmus">Algoritmus:
+1. Beolvassuk a beírt szöveget a mező input eseményén.
+2. Megszámoljuk a karaktereket a .length tulajdonsággal.
+3. Ha a hossz 2-vel osztva 0 maradékot ad (páros), a "kek" osztályt adjuk a szövegnek, egyébként a "piros" osztályt.
+4. jQuery-vel kicseréljük az osztályt és a kiírt szöveget.</p>
+
+		<label for="szoveg-bemenet">Szó vagy mondat</label>
+		<input type="text" id="szoveg-bemenet" value="Sárga a márga">
+
+		<div class="eredmeny">
+			<p id="szoveg-kimenet"></p>
+			<p id="szoveg-info" style="color:#777; font-size:0.85rem;"></p>
+		</div>
+	</div>
+
+	<!-- 2. FELADAT -->
+	<div class="feladat">
+		<h2>2. Véletlen méretű kép, álló/fekvő felismerés</h2>
+		<p class="leiras">Generálj két véletlen számot 100 és 500 között, százasával - ezek lesznek egy kép szélessége és magassága. A méretek alapján állapítsd meg, hogy álló vagy fekvő a kép, és add meg a megfelelő CSS osztályt.</p>
+		<p class="algoritmus">Algoritmus:
+1. Legyártunk egy [100, 200, 300, 400, 500] tömböt, és ebből véletlenszerűen választunk két értéket (szélesség, magasság).
+2. Beállítjuk ezt a méretet egy &lt;img&gt; elem width/height attribútumára.
+3. Összehasonlítjuk a két értéket: ha magasság &gt; szélesség -&gt; "allo" osztály, ha szélesség &gt; magasság -&gt; "fekvo" osztály, ha egyenlők -&gt; "negyzetes" osztály.
+4. A kapott osztályt hozzáadjuk a képhez (jQuery .addClass()).</p>
+
+		<button id="kep-gomb" type="button">Új kép generálása</button>
+
+		<div class="eredmeny" id="kep-doboz">
+			<p id="kep-info"></p>
+		</div>
+	</div>
+
+	<!-- 3. FELADAT -->
+	<div class="feladat">
+		<h2>3. Háromszög egyenlőtlenség + CSS háromszög rajzolása</h2>
+		<p class="leiras">Generálj három véletlen számot 10 és 90 között. Döntsd el, hogy lehetnek-e egy háromszög oldalai, és ha igen, rajzold ki CSS-sel (a valós oldalarányoknak megfelelően).</p>
+		<p class="algoritmus">Algoritmus:
+1. Három véletlen egész szám generálása 10-90 között (a, b, c).
+2. Növekvő sorrendbe rendezzük, és megvizsgáljuk a háromszög-egyenlőtlenséget: a két legkisebb oldal összege nagyobb kell legyen a legnagyobbnál.
+3. Ha nem teljesül -&gt; hibaüzenet.
+4. Ha teljesül, koordinátageometriával kiszámoljuk a 3 csúcspontot (koszinusz-tétel helyett Pitagorasz-alapú levezetéssel), majd ezekből egy CSS clip-path: polygon(...) tulajdonságot építünk, ami egy dobozon valódi (az oldalhosszakkal arányos) háromszöget vág ki.</p>
+
+		<button id="haromszog-gomb" type="button">Új háromszög generálása</button>
+
+		<div class="eredmeny">
+			<p id="haromszog-info"></p>
+			<div class="haromszog-terulet">
+				<div id="haromszog" style="display:none;"></div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 4. FELADAT -->
+	<div class="feladat">
+		<h2>4. Partner logók automatikus oszlopszáma</h2>
+		<p class="leiras">5-20 partner logóját szeretnénk 4, 5 vagy 6 oszlopban megjeleníteni úgy, hogy az utolsó sor lehetőleg ne legyen "törött" (minél kevesebb hiányzó hely maradjon benne).</p>
+		<p class="algoritmus">Algoritmus:
+1. Végigmegyünk a lehetséges oszlopszámokon (4, 5, 6).
+2. Mindegyikhez kiszámoljuk a maradékot: partnerek száma % oszlopszám.
+3. Ha a maradék 0, tökéletes a kitöltés (0 hiányzó hely), egyébként a hiányzó helyek száma = oszlopszám - maradék.
+4. Azt az oszlopszámot választjuk, amelyiknél a legkevesebb hely marad üresen az utolsó sorban; egyenlő esély esetén a nagyobb oszlopszámot (kompaktabb, kevesebb sor).
+5. A kapott oszlopszámot beállítjuk a rács grid-template-columns tulajdonságára.</p>
+
+		<label for="partner-szam">Partnerek száma (5-20)</label>
+		<input type="number" id="partner-szam" min="5" max="20" value="13">
+
+		<div class="eredmeny">
+			<p id="partner-info"></p>
+			<div id="partner-racs"></div>
+		</div>
+	</div>
+
+	<!-- 5. FELADAT -->
+	<div class="feladat">
+		<h2>5. Kézműves sör webshop - kiszállítási díj</h2>
+		<p class="leiras">A söröket 6 rekeszes (500 Ft) vagy 3 rekeszes (300 Ft) papírdobozban szállítják, a csomag kiszállítása pedig fix 2000 Ft. 1 és 99 közötti darabszám rendelhető, de mindegyiket dobozba kell tenni - számold ki a legolcsóbb dobozkombinációt és a teljes szállítási díjat.</p>
+		<p class="algoritmus">Algoritmus:
+1. Mivel a 6-os doboz egységára (500/6 ≈ 83,3 Ft/üveg) olcsóbb, mint a 3-as dobozé (300/3 = 100 Ft/üveg), amennyi 6-os dobozt csak lehet, annyit használunk: hatosok = egészrész(darabszám / 6).
+2. A maradék üveget (darabszám % 6) nézzük:
+   - ha a maradék 0, nincs szükség több dobozra,
+   - ha a maradék 1-3 között van, egy plusz 3-as doboz (300 Ft) elég és ez olcsóbb, mint egy újabb 6-os,
+   - ha a maradék 4 vagy 5, egy újabb 6-os doboz (500 Ft) olcsóbb, mint két 3-as doboz (600 Ft) lenne.
+3. Összeadjuk a dobozok árát, majd hozzáadjuk a fix 2000 Ft szállítási díjat.</p>
+
+		<label for="sor-darabszam">Hány üveg sört rendelsz? (1-99)</label>
+		<input type="number" id="sor-darabszam" min="1" max="99" value="14">
+
+		<div class="eredmeny" id="sor-eredmeny"></div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+	<script type="text/javascript">
+		$(document).ready(function ($) {
+
+			/* ============================================================
+			   1. FELADAT: karakterszám alapú szövegszínezés
+			   ============================================================ */
+
+			function szovegSzinez() {
+				var szoveg = $('#szoveg-bemenet').val();
+				var hossz = szoveg.length;
+				var paros = hossz % 2 === 0;
+
+				console.log('szöveg:', szoveg, '| hossz:', hossz, '| páros:', paros);
+
+				$('#szoveg-kimenet')
+					.text(szoveg || '(üres)')
+					.removeClass('kek piros')
+					.addClass(paros ? 'kek' : 'piros');
+
+				$('#szoveg-info').text(
+					hossz + ' karakterből áll, ez ' + (paros ? 'páros' : 'páratlan') +
+					' szám, ezért ' + (paros ? 'kék' : 'piros') + ' színnel jelenik meg.'
+				);
+			}
+
+			$('#szoveg-bemenet').on('input', szovegSzinez);
+			szovegSzinez();
+
+
+			/* ============================================================
+			   2. FELADAT: véletlen kép méret + álló/fekvő
+			   ============================================================ */
+
+			function veletlenSzazas() {
+				var lehetsegesek = [100, 200, 300, 400, 500];
+				return lehetsegesek[Math.floor(Math.random() * lehetsegesek.length)];
+			}
+
+			function svgKepUrl(szelesseg, magassag, felirat) {
+				var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + szelesseg + '" height="' + magassag + '">' +
+					'<rect width="100%" height="100%" fill="#e9e6df"/>' +
+					'<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#888">' + felirat + '</text>' +
+					'</svg>';
+				return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+			}
+
+			function ujKepGeneral() {
+				var szelesseg = veletlenSzazas();
+				var magassag = veletlenSzazas();
+				var osztaly;
+
+				if (magassag > szelesseg) {
+					osztaly = 'allo';
+				} else if (szelesseg > magassag) {
+					osztaly = 'fekvo';
+				} else {
+					osztaly = 'negyzetes';
+				}
+
+				console.log('kép méret:', szelesseg + 'x' + magassag, '| osztály:', osztaly);
+
+				var felirat = szelesseg + ' x ' + magassag;
+				var $img = $('<img>', {
+					src: svgKepUrl(szelesseg, magassag, felirat),
+					width: szelesseg,
+					height: magassag,
+					class: osztaly,
+					alt: 'Véletlen generált kép'
+				});
+
+				var szoveg;
+				if (osztaly === 'allo') { szoveg = 'Álló kép'; }
+				else if (osztaly === 'fekvo') { szoveg = 'Fekvő kép'; }
+				else { szoveg = 'Négyzetes kép'; }
+
+				$('#kep-doboz img').remove();
+				$('#kep-doboz').append($img);
+				$('#kep-info').html(
+					'Szélesség: <strong>' + szelesseg + 'px</strong>, magasság: <strong>' + magassag + 'px</strong> &rarr; ' +
+					'<strong>' + szoveg + '</strong> (osztály: <code>' + osztaly + '</code>)'
+				);
+			}
+
+			$('#kep-gomb').on('click', ujKepGeneral);
+			ujKepGeneral();
+
+
+			/* ============================================================
+			   3. FELADAT: háromszög-egyenlőtlenség + CSS rajzolás
+			   ============================================================ */
+
+			function veletlenOldal() {
+				return Math.floor(Math.random() * (90 - 10 + 1)) + 10;
+			}
+
+			// a P1=(0,0), P2=(a,0) pontokból, valamint a P1P3=b és P2P3=c
+			// távolságokból kiszámolja a harmadik csúcspontot
+			function haromszogPontok(a, b, c) {
+				var x = (a * a + b * b - c * c) / (2 * a);
+				var y2 = b * b - x * x;
+				if (y2 < 0) { return null; }
+				var y = Math.sqrt(y2);
+				return [[0, 0], [a, 0], [x, y]];
+			}
+
+			function ujHaromszogGeneral() {
+				var a = veletlenOldal();
+				var b = veletlenOldal();
+				var c = veletlenOldal();
+				var rendezett = [a, b, c].slice().sort(function (x, y) { return x - y; });
+				var ervenyes = rendezett[0] + rendezett[1] > rendezett[2];
+
+				console.log('oldalak:', a, b, c, '| érvényes háromszög:', ervenyes);
+
+				if (!ervenyes) {
+					$('#haromszog-info').html(
+						'Oldalak: <strong>' + a + ', ' + b + ', ' + c + '</strong> &rarr; ' +
+						'<span style="color:#c0392b;">Ezek NEM lehetnek egy háromszög oldalai</span>, mert a két legkisebb oldal ' +
+						'(' + rendezett[0] + ' + ' + rendezett[1] + ' = ' + (rendezett[0] + rendezett[1]) + ') összege nem nagyobb, mint a legnagyobb oldal (' + rendezett[2] + ').'
+					);
+					$('#haromszog').hide();
+					return;
+				}
+
+				var pontok = haromszogPontok(a, b, c);
+				var xErtekek = pontok.map(function (p) { return p[0]; });
+				var yErtekek = pontok.map(function (p) { return p[1]; });
+				var minX = Math.min.apply(null, xErtekek), maxX = Math.max.apply(null, xErtekek);
+				var minY = Math.min.apply(null, yErtekek), maxY = Math.max.apply(null, yErtekek);
+				var szeles = maxX - minX, magas = maxY - minY;
+				var maxMeret = 220;
+				var arany = maxMeret / Math.max(szeles, magas);
+
+				var clipPontok = pontok.map(function (p) {
+					var px = ((p[0] - minX) / szeles) * 100;
+					var py = ((p[1] - minY) / magas) * 100;
+					return px.toFixed(2) + '% ' + py.toFixed(2) + '%';
+				}).join(', ');
+
+				$('#haromszog').css({
+					width: (szeles * arany) + 'px',
+					height: (magas * arany) + 'px',
+					clipPath: 'polygon(' + clipPontok + ')',
+					webkitClipPath: 'polygon(' + clipPontok + ')'
+				}).show();
+
+				$('#haromszog-info').html(
+					'Oldalak: <strong>' + a + ', ' + b + ', ' + c + '</strong> &rarr; ' +
+					'<span style="color:#1b7a1b;">Igen, ezek lehetnek egy háromszög oldalai</span> (' +
+					rendezett[0] + ' + ' + rendezett[1] + ' > ' + rendezett[2] + ').'
+				);
+			}
+
+			$('#haromszog-gomb').on('click', ujHaromszogGeneral);
+			ujHaromszogGeneral();
+
+
+			/* ============================================================
+			   4. FELADAT: partner logók automatikus oszlopszáma
+			   ============================================================ */
+
+			function legjobbOszlopszam(n) {
+				var lehetsegesek = [4, 5, 6];
+				var legjobb = null;
+
+				lehetsegesek.forEach(function (oszlop) {
+					var maradek = n % oszlop;
+					var hianyzo = maradek === 0 ? 0 : oszlop - maradek;
+
+					if (legjobb === null ||
+						hianyzo < legjobb.hianyzo ||
+						(hianyzo === legjobb.hianyzo && oszlop > legjobb.oszlop)) {
+						legjobb = { oszlop: oszlop, hianyzo: hianyzo };
+					}
+				});
+
+				return legjobb;
+			}
+
+			function partnerRacsFrissit() {
+				var n = parseInt($('#partner-szam').val(), 10);
+				if (!n || n < 1) { n = 1; }
+
+				var eredmeny = legjobbOszlopszam(n);
+				var sorok = Math.ceil(n / eredmeny.oszlop);
+
+				console.log('partnerek:', n, '| oszlopszám:', eredmeny.oszlop, '| hiányzó hely:', eredmeny.hianyzo);
+
+				$('#partner-racs').css('grid-template-columns', 'repeat(' + eredmeny.oszlop + ', 1fr)').empty();
+
+				for (var i = 1; i <= n; i++) {
+					$('<div>', { class: 'partner-logo', text: 'Partner ' + i }).appendTo('#partner-racs');
+				}
+
+				$('#partner-info').html(
+					'<strong>' + n + ' partner</strong> &rarr; <strong>' + eredmeny.oszlop + ' oszlopos</strong> elrendezés (' +
+					sorok + ' sor), az utolsó sorban <strong>' + eredmeny.hianyzo + '</strong> hely marad üresen.'
+				);
+			}
+
+			$('#partner-szam').on('input', partnerRacsFrissit);
+			partnerRacsFrissit();
+
+
+			/* ============================================================
+			   5. FELADAT: sör kiszállítási díj kalkulátor
+			   ============================================================ */
+
+			var HATOS_AR = 500;
+			var HARMAS_AR = 300;
+			var SZALLITASI_DIJ = 2000;
+
+			function dobozokSzamolasa(darabszam) {
+				var hatosok = Math.floor(darabszam / 6);
+				var maradek = darabszam - hatosok * 6;
+				var harmasok = 0;
+
+				if (maradek === 0) {
+					// nincs teendő
+				} else if (maradek <= 3) {
+					harmasok = 1;
+				} else {
+					// maradék 4 vagy 5 -> olcsóbb egy újabb hatos dobozt venni,
+					// mint két háromsat (500 Ft < 600 Ft)
+					hatosok += 1;
+				}
+
+				return { hatosok: hatosok, harmasok: harmasok };
+			}
+
+			function sorSzallitasFrissit() {
+				var darabszam = parseInt($('#sor-darabszam').val(), 10);
+				if (!darabszam || darabszam < 1) { darabszam = 1; }
+				if (darabszam > 99) { darabszam = 99; }
+
+				var dobozok = dobozokSzamolasa(darabszam);
+				var dobozAr = dobozok.hatosok * HATOS_AR + dobozok.harmasok * HARMAS_AR;
+				var vegosszeg = dobozAr + SZALLITASI_DIJ;
+				var befogadottUveg = dobozok.hatosok * 6 + dobozok.harmasok * 3;
+
+				console.log('rendelt üveg:', darabszam, '| dobozok:', dobozok, '| doboz ár:', dobozAr, '| végösszeg:', vegosszeg);
+
+				var dobozHtml = '';
+				for (var i = 0; i < dobozok.hatosok; i++) {
+					dobozHtml += '<span class="doboz">6 rekeszes - 500 Ft</span>';
+				}
+				for (var j = 0; j < dobozok.harmasok; j++) {
+					dobozHtml += '<span class="doboz harmas">3 rekeszes - 300 Ft</span>';
+				}
+
+				$('#sor-eredmeny').html(
+					'<p>Rendelt mennyiség: <strong>' + darabszam + ' üveg</strong> (a dobozok ' + befogadottUveg + ' üveg befogadására elegendőek)</p>' +
+					'<div class="doboz-sor">' + dobozHtml + '</div>' +
+					'<p style="margin-top:0.75rem;">Dobozok ára: <strong>' + dobozAr.toLocaleString('hu-HU') + ' Ft</strong></p>' +
+					'<p>Kiszállítás: <strong>' + SZALLITASI_DIJ.toLocaleString('hu-HU') + ' Ft</strong></p>' +
+					'<p style="font-size:1.1rem; margin-top:0.5rem;">Fizetendő szállítási díj összesen: <strong>' + vegosszeg.toLocaleString('hu-HU') + ' Ft</strong></p>'
+				);
+			}
+
+			$('#sor-darabszam').on('input', sorSzallitasFrissit);
+			sorSzallitasFrissit();
+
+		});
+	</script>
+</body>
+
+</html>
